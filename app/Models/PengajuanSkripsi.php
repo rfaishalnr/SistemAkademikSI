@@ -43,10 +43,14 @@ class PengajuanSkripsi extends Model
     //     return $this->belongsTo(Dosen::class, 'dosen_pembimbing_id');
     // }
 
+    public function dosen_pembimbing_2()
+    {
+        return $this->belongsTo(Dosen::class, 'dosen_pembimbing_2_id');
+    }
 
-    // public function dosenPembimbing2()
-    // {
-    //     return $this->belongsTo(Dosen::class, 'dosen_pembimbing_2_id');
-    // }
+    public function dosenPembimbing2()
+    {
+        return $this->belongsTo(Dosen::class, 'dosen_pembimbing_2_id');
+    }
     
 }

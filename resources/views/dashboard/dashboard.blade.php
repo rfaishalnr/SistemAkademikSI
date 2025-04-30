@@ -488,63 +488,64 @@
                     </div>
                 </div>
 
-                <!-- Pembimbing 2 -->
-                {{-- <div class="mb-4">
-                    <h4 class="font-semibold text-gray-700 mb-2">Dosen Pembimbing 2:</h4>
-                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <div class="flex items-center mb-2">
-                            <i data-lucide="user" class="w-5 h-5 text-blue-600 mr-2"></i>
-                            <span>{{ $dosenPembimbing2 ? $dosenPembimbing2->name : 'Belum memilih dosen pembimbing 2' }}</span>
+<!-- Pembimbing 2 -->
+<div class="mb-4">
+    <h4 class="font-semibold text-gray-700 mb-2">Dosen Pembimbing 2:</h4>
+    <div class="bg-gray-50 p-3 rounded-lg border border-gray-200">
+        <div class="flex items-center mb-2">
+            <i data-lucide="user" class="w-5 h-5 text-blue-600 mr-2"></i>
+            <span>{{ $dosenPembimbing2 ? $dosenPembimbing2->name : 'Belum memilih dosen pembimbing 2' }}</span>
 
-                            <span
-                                class="inline-block px-2 py-1 text-xs font-semibold rounded {{ $statusClass2 }} ml-2">
-                                {{ $statusLabel2 }}
-                            </span>
-                        </div>
+            @if ($hasDosen2)
+                <span class="inline-block px-2 py-1 text-xs font-semibold rounded {{ $statusClass2 }} ml-2">
+                    {{ $statusLabel2 }}
+                </span>
+            @endif
+        </div>
 
-                        @if ($statusPembimbing2 === 'rejected' && $catatanPembimbing2)
-                            <p class="text-sm text-red-600 mt-2">
-                                <strong>Catatan Dosen:</strong> {{ $catatanPembimbing2 }}
-                            </p>
-                        @endif
+        @if ($statusPembimbing2 === 'rejected' && $catatanPembimbing2)
+            <p class="text-sm text-red-600 mt-2">
+                <strong>Catatan Dosen:</strong> {{ $catatanPembimbing2 }}
+            </p>
+        @endif
 
-                        <!-- Tampilkan kontak dosen jika status accepted dan dosen sudah dipilih -->
-                        @if ($statusPembimbing2 === 'accepted' && $dosenPembimbing2)
-                            <div class="mt-3 p-3 border border-green-200 bg-green-50 rounded-md">
-                                <p class="text-sm text-green-800 font-semibold">
-                                    Kontak Dosen Pembimbing 2:
-                                </p>
-                                <p class="text-sm text-green-700 mt-1 flex flex-col gap-2">
-                                    <span class="font-medium">{{ $dosenPembimbing2->name }}</span>
+        <!-- Tampilkan kontak dosen jika status accepted dan dosen sudah dipilih -->
+        @if ($statusPembimbing2 === 'accepted' && $dosenPembimbing2)
+            <div class="mt-3 p-3 border border-green-200 bg-green-50 rounded-md">
+                <p class="text-sm text-green-800 font-semibold">
+                    Kontak Dosen Pembimbing 2:
+                </p>
+                <p class="text-sm text-green-700 mt-1 flex flex-col gap-2">
+                    <span class="font-medium">{{ $dosenPembimbing2->name }}</span>
 
-                                    <!-- Email -->
-                                    <a href="mailto:{{ $dosenPembimbing2->email }}"
-                                        class="flex items-center text-green-700 hover:text-green-900 underline">
-                                        <svg class="w-5 h-5 mr-1 text-green-600" fill="none"
-                                            stroke="currentColor" stroke-width="1.5"
-                                            viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round"
-                                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5H4.5a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-.947 1.85l-7.5 5.625a2.25 2.25 0 01-2.606 0L3.697 8.843a2.25 2.25 0 01-.947-1.85V6.75" />
-                                        </svg>
-                                        {{ $dosenPembimbing2->email }}
-                                    </a>
+                    <!-- Email -->
+                    <a href="mailto:{{ $dosenPembimbing2->email }}"
+                        class="flex items-center text-green-700 hover:text-green-900 underline">
+                        <svg class="w-5 h-5 mr-1 text-green-600" fill="none"
+                            stroke="currentColor" stroke-width="1.5"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25H4.5a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5H4.5a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-.947 1.85l-7.5 5.625a2.25 2.25 0 01-2.606 0L3.697 8.843a2.25 2.25 0 01-.947-1.85V6.75" />
+                        </svg>
+                        {{ $dosenPembimbing2->email }}
+                    </a>
 
-                                    <!-- WhatsApp -->
-                                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $dosenPembimbing2->nomor_hp) }}"
-                                        target="_blank"
-                                        class="flex items-center text-green-700 hover:text-green-900 underline">
-                                        <svg class="w-5 h-5 mr-1 text-green-600" fill="currentColor"
-                                            viewBox="0 0 24 24">
-                                            <path
-                                                d="M20.52 3.48A11.94 11.94 0 0012 0C5.373 0 0 5.373 0 12a11.94 11.94 0 001.63 5.88L0 24l6.3-1.65A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12 0-3.19-1.237-6.212-3.48-8.52zM12 22.08a10.03 10.03 0 01-5.13-1.41l-.37-.22-3.73.98.99-3.63-.24-.38a10.06 10.06 0 01-1.52-5.35C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10.08-10 10.08zm5.62-7.25c-.3-.15-1.77-.87-2.05-.97s-.47-.15-.67.15-.77.97-.95 1.17-.35.22-.65.07a8.1 8.1 0 01-2.4-1.47 9 9 0 01-1.65-2.05c-.17-.3-.02-.46.13-.6.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52s-.67-1.62-.92-2.22c-.24-.57-.48-.5-.67-.5h-.57c-.2 0-.5.07-.77.37s-1 1-1 2.45 1.05 2.85 1.2 3.05 2.06 3.13 5 4.4c.7.3 1.26.48 1.7.61.72.23 1.37.2 1.88.12.58-.08 1.77-.73 2.03-1.43.25-.7.25-1.3.17-1.43-.1-.13-.27-.2-.57-.35z" />
-                                        </svg>
-                                        {{ $dosenPembimbing2->nomor_hp }}
-                                    </a>
-                                </p>
-                            </div>
-                        @endif
-                    </div>
-                </div> --}}
+                    <!-- WhatsApp -->
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $dosenPembimbing2->nomor_hp) }}"
+                        target="_blank"
+                        class="flex items-center text-green-700 hover:text-green-900 underline">
+                        <svg class="w-5 h-5 mr-1 text-green-600" fill="currentColor"
+                            viewBox="0 0 24 24">
+                            <path
+                                d="M20.52 3.48A11.94 11.94 0 0012 0C5.373 0 0 5.373 0 12a11.94 11.94 0 001.63 5.88L0 24l6.3-1.65A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12 0-3.19-1.237-6.212-3.48-8.52zM12 22.08a10.03 10.03 0 01-5.13-1.41l-.37-.22-3.73.98.99-3.63-.24-.38a10.06 10.06 0 01-1.52-5.35C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10.08-10 10.08zm5.62-7.25c-.3-.15-1.77-.87-2.05-.97s-.47-.15-.67.15-.77.97-.95 1.17-.35.22-.65.07a8.1 8.1 0 01-2.4-1.47 9 9 0 01-1.65-2.05c-.17-.3-.02-.46.13-.6.14-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52s-.67-1.62-.92-2.22c-.24-.57-.48-.5-.67-.5h-.57c-.2 0-.5.07-.77.37s-1 1-1 2.45 1.05 2.85 1.2 3.05 2.06 3.13 5 4.4c.7.3 1.26.48 1.7.61.72.23 1.37.2 1.88.12.58-.08 1.77-.73 2.03-1.43.25-.7.25-1.3.17-1.43-.1-.13-.27-.2-.57-.35z" />
+                        </svg>
+                        {{ $dosenPembimbing2->nomor_hp }}
+                    </a>
+                </p>
+            </div>
+        @endif
+    </div>
+</div>
 
 
 

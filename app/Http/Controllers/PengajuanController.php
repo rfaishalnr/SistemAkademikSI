@@ -105,21 +105,54 @@ class PengajuanController extends Controller
 
 
 
-    // GET: Form pengajuan skripsi
     public function pengajuanSkripsi()
     {
-        // Ambil data mahasiswa yang sedang login
+        // Kode yang sudah ada
         $mahasiswa = Mahasiswa::where('id', auth('mahasiswa')->id())->first();
-
+    
         if (!$mahasiswa) {
             return redirect()->route('mahasiswa.dashboard')->with('error', 'Mahasiswa tidak ditemukan.');
         }
-
+    
         $ketentuans = Ketentuan::where('jenis', 'Skripsi')->get();
         $pengajuans = PengajuanSkripsi::where('mahasiswa_id', $mahasiswa->id)->get();
         $dosens = \App\Models\Dosen::where('peran', 'Pembimbing')->get();
-
-        return view('pengajuan.ta', compact('ketentuans', 'pengajuans', 'dosens'));
+    
+        // Tambahkan kode berikut
+        $pengajuan = PengajuanSkripsi::where('mahasiswa_id', $mahasiswa->id)
+                    ->with(['dosen_pembimbing', 'dosen_pembimbing_2'])
+                    ->first();
+        
+        // Inisialisasi variabel yang dibutuhkan view
+        $dosenPembimbing2 = $pengajuan && $pengajuan->dosen_pembimbing_2 ? $pengajuan->dosen_pembimbing_2 : null;
+        $hasDosen2 = !is_null($dosenPembimbing2);
+        $statusPembimbing2 = $pengajuan && $pengajuan->status_pembimbing_2 ? $pengajuan->status_pembimbing_2 : 'pending';
+        $catatanPembimbing2 = $pengajuan ? $pengajuan->catatan_pembimbing_2 : null;
+        
+        // Set status class dan label
+        $statusClass2 = 'bg-yellow-100 text-yellow-800';
+        $statusLabel2 = 'Menunggu Konfirmasi';
+        
+        if ($statusPembimbing2 === 'accepted') {
+            $statusClass2 = 'bg-green-100 text-green-800';
+            $statusLabel2 = 'Diterima';
+        } elseif ($statusPembimbing2 === 'rejected') {
+            $statusClass2 = 'bg-red-100 text-red-800';
+            $statusLabel2 = 'Ditolak';
+        }
+    
+        return view('pengajuan.ta', compact(
+            'ketentuans', 
+            'pengajuans', 
+            'dosens', 
+            'pengajuan',
+            'dosenPembimbing2',
+            'hasDosen2',
+            'statusPembimbing2',
+            'statusClass2',
+            'statusLabel2',
+            'catatanPembimbing2'
+        ));
     }
 
 
