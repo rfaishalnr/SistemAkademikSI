@@ -18,6 +18,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class KetentuanResource extends Resource
 {
@@ -106,8 +108,14 @@ class KetentuanResource extends Resource
                     ->limit(50),
                 TextColumn::make('panduan')
                     ->limit(50),
-                TextColumn::make('file_upload')
+                TextColumn::make('file_panduan')
+                    ->label('File Panduan')
+                    ->formatStateUsing(fn($state) => Str::afterLast($state, '/'))
+                    ->url(fn($record) => Storage::url($record->file_panduan))
+                    ->openUrlInNewTab()
                     ->limit(50),
+
+
 
                 TextColumn::make('created_at')
                     ->label('Dibuat Pada')

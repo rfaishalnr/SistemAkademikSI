@@ -25,6 +25,40 @@
             }
         }
     </script>
+
+    <!-- Add custom styles -->
+<style>
+    .card {
+        transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 640px) {
+        .guide-item {
+            padding: 12px;
+        }
+        
+        .guide-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+    }
+    
+    .guide-item:hover .guide-icon {
+        transform: translateY(-5px);
+    }
+    
+    .guide-icon {
+        transition: transform 0.3s ease;
+    }
+    
+    /* Tambahan untuk mobile */
+    @media (max-width: 480px) {
+        .card-container {
+            margin-left: -8px;
+            margin-right: -8px;
+        }
+    }
+</style>
 </head>
 
 <body class="font-sans bg-gray-50 flex flex-col min-h-screen">
@@ -145,6 +179,7 @@
                 use App\Models\PengajuanKP;
                 use App\Models\PengajuanSkripsi;
                 use App\Models\LaporanKP;
+                use App\Models\Ketentuan;
                 $pengajuanKP = PengajuanKP::where('mahasiswa_id', auth()->id())
                     ->latest()
                     ->first();
@@ -575,8 +610,104 @@
 
             </div>
         </div>
+
+        
     </main>
 
+<!-- Panduan & Template Section -->
+<section class="bg-gray-50 py-6 sm:py-8 md:py-10">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
+        <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-4 sm:mb-6 text-center">Panduan & Template</h2>
+        
+        @php
+            // Fetch ketentuan data from database
+            $ketentuans = App\Models\Ketentuan::whereNotNull('panduan')
+                ->whereNotNull('file_panduan')
+                ->get();
+            
+            // Group ketentuan by jenis (KP and Skripsi)
+            $kpTemplates = $ketentuans->where('jenis', 'KP');
+            $skripsiTemplates = $ketentuans->where('jenis', 'Skripsi');
+        @endphp
+
+        <!-- KP Guides Card - Only shown if there are KP templates -->
+        @if($kpTemplates->count() > 0)
+        <div class="card bg-white shadow-lg rounded-lg overflow-hidden mb-4 sm:mb-6">
+            <div class="bg-blue-600 px-4 sm:px-6 py-3 sm:py-4 flex items-center text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <h3 class="text-lg sm:text-xl font-semibold">Panduan Kerja Praktek</h3>
+            </div>
+            <div class="p-3 sm:p-4 md:p-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                    @foreach($kpTemplates as $template)
+                    <!-- Template Item -->
+                    <a href="{{ asset('storage/' . $template->file_panduan) }}" target="_blank" class="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200 hover:bg-gray-100 transition flex flex-col items-center text-center group">
+                        <div class="text-blue-600 mb-2 sm:mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-2 text-sm sm:text-base">{{ $template->panduan }}</h4>
+                        <span class="text-blue-600 hover:text-blue-800 flex items-center justify-center text-xs sm:text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Unduh Template
+                        </span>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
+        
+        <!-- Skripsi Guides Card - Only shown if there are Skripsi templates -->
+        @if($skripsiTemplates->count() > 0)
+        <div class="card bg-white shadow-lg rounded-lg overflow-hidden">
+            <div class="bg-blue-600 px-4 sm:px-6 py-3 sm:py-4 flex items-center text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+                <h3 class="text-lg sm:text-xl font-semibold">Panduan Penulisan Skripsi</h3>
+            </div>
+            <div class="p-3 sm:p-4 md:p-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                    @foreach($skripsiTemplates as $template)
+                    <!-- Template Item -->
+                    <a href="{{ asset('storage/' . $template->file_panduan) }}" target="_blank" class="bg-gray-50 rounded-lg p-3 sm:p-4 border border-gray-200 hover:bg-gray-100 transition flex flex-col items-center text-center group">
+                        <div class="text-blue-600 mb-2 sm:mb-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 sm:h-10 sm:w-10 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-2 text-sm sm:text-base">{{ $template->panduan }}</h4>
+                        <span class="text-blue-600 hover:text-blue-800 flex items-center justify-center text-xs sm:text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 sm:h-4 sm:w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Unduh Template
+                        </span>
+                    </a>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        @endif
+
+        <!-- Show a message if no templates are available -->
+        @if($ketentuans->count() == 0)
+            <div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg text-center">
+                <p class="text-gray-600 text-sm sm:text-base">Belum ada template yang tersedia. Silakan cek kembali nanti.</p>
+            </div>
+        @endif
+    </div>
+</section>
+
+
+
+    
     <footer class="bg-white py-4 border-t border-gray-200">
         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <p class="text-gray-500">&copy; <span id="current-year"></span> Sistem Akademik.</p>
