@@ -152,36 +152,45 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($ketentuans as $index => $ketentuan)
-                                    <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                        <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                        <td class="px-4 py-3">{{ $ketentuan->persyaratan }}</td>
-                                        <td class="px-4 py-3">
-                                            <input type="file" name="files[{{ $ketentuan->id }}]"
-                                                class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                                required>
-                                        </td>
-                                        {{-- <td class="px-4 py-3">
-                                        @if ($ketentuan->file_panduan)
-                                            <a href="{{ asset('storage/' . $ketentuan->file_panduan) }}" target="_blank" class="text-blue-600 hover:underline">
-                                                Lihat Panduan
-                                            </a>
-                                        @else
-                                            Tidak ada panduan
-                                        @endif
-                                    </td> --}}
-                                    </tr>
-                                @empty
+                                @php 
+                                    $validKetentuans = $ketentuans->filter(function($ketentuan) {
+                                        return isset($ketentuan->persyaratan) && !empty(trim($ketentuan->persyaratan));
+                                    });
+                                @endphp
+                                
+                                @if($validKetentuans->count() > 0)
+                                    @php $counter = 1; @endphp
+                                    @foreach($validKetentuans as $ketentuan)
+                                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                            <td class="px-4 py-3">{{ $counter }}</td>
+                                            <td class="px-4 py-3">{{ $ketentuan->persyaratan }}</td>
+                                            <td class="px-4 py-3">
+                                                <input type="file" name="files[{{ $ketentuan->id }}]"
+                                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                    required>
+                                            </td>
+                                            {{-- <td class="px-4 py-3">
+                                            @if ($ketentuan->file_panduan)
+                                                <a href="{{ asset('storage/' . $ketentuan->file_panduan) }}" target="_blank" class="text-blue-600 hover:underline">
+                                                    Lihat Panduan
+                                                </a>
+                                            @else
+                                                Tidak ada panduan
+                                            @endif
+                                        </td> --}}
+                                        </tr>
+                                        @php $counter++; @endphp
+                                    @endforeach
+                                @else
                                     <tr>
                                         <td colspan="4" class="px-4 py-3 text-center text-gray-500">Tidak ada berkas
                                             yang perlu diunggah.</td>
                                     </tr>
-                                @endforelse
+                                @endif
                             </tbody>
                         </table>
-
                     </div>
-
+                
                     <div class="mt-6">
                         <button type="submit"
                             class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center">

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('ketentuans', function (Blueprint $table) {
             $table->id();
             $table->string('jenis'); // KP atau Skripsi
-            $table->text('persyaratan');
+            $table->text('persyaratan')->nullable();
             $table->text('prosedur')->nullable();
             $table->text('timeline')->nullable();
             $table->text('panduan')->nullable();

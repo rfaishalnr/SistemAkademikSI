@@ -42,7 +42,7 @@ class KetentuanResource extends Resource
                     ->label('Jenis')
                     ->options([
                         'KP' => 'Kerja Praktek (KP)',
-                        'Skripsi' => 'Skripsi',
+                        'Skripsi' => 'Skripsi (TA)',
                     ])
                     ->required()
                     ->columnSpan([
@@ -53,7 +53,7 @@ class KetentuanResource extends Resource
 
                 Textarea::make('persyaratan')
                     ->label('Persyaratan')
-                    ->required()
+                    // ->required()
                     ->columnSpan([
                         'sm' => 2,
                         'xl' => 3,

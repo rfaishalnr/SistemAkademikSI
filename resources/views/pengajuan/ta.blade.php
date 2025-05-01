@@ -130,87 +130,89 @@
         <div class="container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white shadow-lg rounded-lg p-6">
 
-                {{-- Form Upload Berkas --}}
-                <form action="{{ route('mahasiswa.submit-ta') }}" method="POST" enctype="multipart/form-data">
-                    @csrf
 
-                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Berkas yang Harus Diupload</h2>
+{{-- Form Upload Berkas --}}
+<form action="{{ route('mahasiswa.submit-ta') }}" method="POST" enctype="multipart/form-data">
+    @csrf
 
-                    <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200">
-                        <table class="w-full bg-white border border-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama
-                                        Berkas</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Upload
-                                        File</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($ketentuans as $index => $ketentuan)
-                                    @php
-                                        // Ambil file path & status per ketentuan
-                                        $filePath = $pengajuan->files[$ketentuan->id] ?? null;
-                                        $fileStatus = $pengajuan->statuses[$ketentuan->id] ?? null;
-                                        $statusLabelMap = [
-                                            'accepted' => 'Disetujui',
-                                            'rejected' => 'Ditolak',
-                                            'pending' => 'Menunggu',
-                                        ];
-                                        $isRejected = $fileStatus === 'rejected';
-                                    @endphp
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Berkas yang Harus Diupload</h2>
 
-                                    <tr class="border-b border-gray-200 hover:bg-gray-50">
-                                        <td class="px-4 py-3">{{ $index + 1 }}</td>
-                                        <td class="px-4 py-3">{{ $ketentuan->persyaratan }}</td>
-                                        <td class="px-4 py-3">
-                                            {{-- Tampilkan status dan link file jika ada --}}
-                                            @if ($filePath)
-                                                <div class="flex items-center space-x-2">
-                                                    <a href="{{ asset('storage/' . $filePath) }}"
-                                                        class="text-blue-600 text-sm underline" target="_blank">Lihat
-                                                        File</a>
-                                                    <span
-                                                        class="inline-block text-xs px-2 py-1 rounded 
-                                                    {{ $fileStatus === 'accepted'
-                                                        ? 'bg-green-100 text-green-800'
-                                                        : ($fileStatus === 'rejected'
-                                                            ? 'bg-red-100 text-red-800'
-                                                            : 'bg-gray-100 text-gray-800') }}">
-                                                        {{ $statusLabelMap[$fileStatus] ?? ucfirst($fileStatus) }}
-                                                    </span>
-                                                </div>
-                                            @endif
+    <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200">
+        <table class="w-full bg-white border border-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Berkas</th>
+                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Upload File</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php $counter = 1; @endphp
+                @foreach ($ketentuans as $ketentuan)
+                    @if(isset($ketentuan->persyaratan) && !empty(trim($ketentuan->persyaratan)))
+                        @php
+                            // Ambil file path & status per ketentuan
+                            $filePath = $pengajuan->files[$ketentuan->id] ?? null;
+                            $fileStatus = $pengajuan->statuses[$ketentuan->id] ?? null;
+                            $statusLabelMap = [
+                                'accepted' => 'Disetujui',
+                                'rejected' => 'Ditolak',
+                                'pending' => 'Menunggu',
+                            ];
+                            $isRejected = $fileStatus === 'rejected';
+                        @endphp
 
-                                            {{-- Input file jika belum ada file atau ditolak --}}
-                                            @if (!$filePath || $isRejected)
-                                                <input type="file" name="files[{{ $ketentuan->id }}]"
-                                                    class="mt-2 block w-full text-sm text-gray-500
-                                                          file:mr-4 file:py-2 file:px-4
-                                                          file:rounded-full file:border-0 file:text-sm file:font-semibold
-                                                          file:bg-green-50 file:text-blue-700 hover:file:bg-blue-100"
-                                                    {{ !$filePath ? 'required' : '' }}>
-                                                @if ($isRejected)
-                                                    <p class="text-sm text-red-600 mt-1">File sebelumnya ditolak.
-                                                        Silakan unggah ulang.</p>
-                                                @endif
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="px-4 py-3">{{ $counter }}</td>
+                            <td class="px-4 py-3">{{ $ketentuan->persyaratan }}</td>
+                            <td class="px-4 py-3">
+                                {{-- Tampilkan status dan link file jika ada --}}
+                                @if ($filePath)
+                                    <div class="flex items-center space-x-2">
+                                        <a href="{{ asset('storage/' . $filePath) }}"
+                                            class="text-blue-600 text-sm underline" target="_blank">Lihat
+                                            File</a>
+                                        <span
+                                            class="inline-block text-xs px-2 py-1 rounded 
+                                        {{ $fileStatus === 'accepted'
+                                            ? 'bg-green-100 text-green-800'
+                                            : ($fileStatus === 'rejected'
+                                                ? 'bg-red-100 text-red-800'
+                                                : 'bg-gray-100 text-gray-800') }}">
+                                            {{ $statusLabelMap[$fileStatus] ?? ucfirst($fileStatus) }}
+                                        </span>
+                                    </div>
+                                @endif
 
-                            </tbody>
-                        </table>
-                    </div>
+                                {{-- Input file jika belum ada file atau ditolak --}}
+                                @if (!$filePath || $isRejected)
+                                    <input type="file" name="files[{{ $ketentuan->id }}]"
+                                        class="mt-2 block w-full text-sm text-gray-500
+                                              file:mr-4 file:py-2 file:px-4
+                                              file:rounded-full file:border-0 file:text-sm file:font-semibold
+                                              file:bg-green-50 file:text-blue-700 hover:file:bg-blue-100"
+                                        {{ !$filePath ? 'required' : '' }}>
+                                    @if ($isRejected)
+                                        <p class="text-sm text-red-600 mt-1">File sebelumnya ditolak.
+                                            Silakan unggah ulang.</p>
+                                    @endif
+                                @endif
+                            </td>
+                        </tr>
+                        @php $counter++; @endphp
+                    @endif
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 
-                    <div class="mt-6">
-                        <button type="submit"
-                            class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center">
-                            <i data-lucide="upload" class="mr-2"></i> Kirim Pengajuan
-                        </button>
-                    </div>
-                </form>
+    <div class="mt-6">
+        <button type="submit"
+            class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center">
+            <i data-lucide="upload" class="mr-2"></i> Kirim Pengajuan
+        </button>
+    </div>
+</form>
 
                 <hr class="my-8 border-gray-200">
 
