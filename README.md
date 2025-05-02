@@ -64,3 +64,16 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## CARA INSTAL
+Extract Sistem Akademik Laravel
+1. php artisan migrate
+2. php artisan shield:install (karena menggunakan plugin : https://filamentphp.com/plugins/bezhansalleh-shield)
+   Versi 3.2.6 : https://github.com/bezhanSalleh/filament-shield/releases/tag/3.2.6
+3. isi user admin
+4. php artisan serve
+
+Cara Buka Berkas Jika Forbidden 403
+1. rmdir public\storage
+2. ketik "Y"
+3. php artisan storage:link
