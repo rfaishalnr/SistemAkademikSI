@@ -39,58 +39,40 @@ class KetentuanResource extends Resource
         return $form
             ->schema([
                 Select::make('jenis')
-                    ->label('Jenis')
-                    ->options([
-                        'KP' => 'Kerja Praktek (KP)',
-                        'Skripsi' => 'Skripsi (TA)',
-                    ])
-                    ->required()
-                    ->columnSpan([
-                        'sm' => 2,
-                        'xl' => 3,
-                        '2xl' => 4,
-                    ]),
-
-                Textarea::make('persyaratan')
-                    ->label('Persyaratan')
-                    // ->required()
-                    ->columnSpan([
-                        'sm' => 2,
-                        'xl' => 3,
-                        '2xl' => 4,
-                    ]),
-                Textarea::make('prosedur')
-                    ->label('Prosedur (Opsional)')
-                    ->columnSpan([
-                        'sm' => 2,
-                        'xl' => 3,
-                        '2xl' => 4,
-                    ]),
-
-                Textarea::make('timeline')
-                    ->label('Timeline (Opsional)')
-                    ->columnSpan([
-                        'sm' => 2,
-                        'xl' => 3,
-                        '2xl' => 4,
-                    ]),
-
-                Textarea::make('panduan')
-                    ->label('Panduan (Opsional)')
-                    ->columnSpan([
-                        'sm' => 2,
-                        'xl' => 3,
-                        '2xl' => 4,
-                    ]),
-
-                FileUpload::make('file_panduan')
-                    ->label('File Panduan (Opsional)')
-                    ->directory('panduan')
-                    ->columnSpan([
-                        'sm' => 2,
-                        'xl' => 3,
-                        '2xl' => 4,
-                    ]),
+                ->label('Jenis Ketentuan')
+                ->options([
+                    'KP' => 'Kerja Praktek (KP)',
+                    'Skripsi' => 'Skripsi (TA)',
+                ])
+                ->required()
+                ->columnSpanFull(),
+            
+            Textarea::make('persyaratan')
+                ->label('Persyaratan')
+                ->helperText('Hanya isi jika diperlukan')
+                ->columnSpanFull(),
+            
+            Textarea::make('prosedur')
+                ->label('Prosedur')
+                ->helperText('Hanya isi jika diperlukan')
+                ->columnSpanFull(),
+            
+            Textarea::make('timeline')
+                ->label('Timeline')
+                ->helperText('Hanya isi jika diperlukan')
+                ->columnSpanFull(),
+            
+            Textarea::make('panduan')
+                ->label('Nama Panduan')
+                ->helperText('Hanya isi jika diperlukan')
+                ->columnSpanFull(),
+            
+            FileUpload::make('file_panduan')
+                ->label('File Panduan')
+                ->helperText('Hanya unggah jika diperlukan')
+                ->directory('panduan')
+                ->columnSpanFull(),
+            
             ]);
     }
 
