@@ -26,7 +26,17 @@ class PengajuanKPResource extends Resource
     protected static ?string $navigationLabel = 'Kelola Pengajuan KP';
     protected static ?string $slug = 'kelola-pengajuan-kp';
     protected static ?string $navigationGroup = 'Kelola Pengajuan KP';
-
+    
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Kelola Pengajuan KP';
+    }
+    
+    public static function getNavigationSort(): int
+    {
+        return -2; // nilai negatif untuk  posisi paling atas
+    }
+    
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

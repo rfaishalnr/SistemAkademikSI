@@ -23,6 +23,16 @@ class LaporanKpResource extends Resource
     protected static ?string $navigationLabel = 'Review Laporan KP';
     protected static ?string $navigationGroup = 'Kelola Pengajuan KP';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Kelola Pengajuan KP';
+    }
+    
+    public static function getNavigationSort(): int
+    {
+        return -1; // Nilai yang lebih besar dari -2 tapi masih negatif
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -108,7 +118,7 @@ class LaporanKpResource extends Resource
             
                     Forms\Components\Textarea::make('catatan')
                         ->label('Catatan (Opsional)')
-                        ->nullable() // ✅ supaya boleh dikosongkan
+                        ->nullable() // supaya boleh dikosongkan
                         ->default(fn ($record) => $record->catatan),
                 ])
                 ->action(function ($record, $data) {

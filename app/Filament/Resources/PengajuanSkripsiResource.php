@@ -30,6 +30,16 @@ class PengajuanSkripsiResource extends Resource
     protected static ?string $slug = 'kelola-pengajuan-ta';
     protected static ?string $navigationGroup = 'Kelola Pengajuan TA';
 
+    public static function getNavigationGroup(): ?string
+{
+    return 'Kelola Pengajuan TA';
+}
+
+public static function getNavigationSort(): int
+{
+    return 1; // Nilai terkecil = posisi paling atas
+}
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

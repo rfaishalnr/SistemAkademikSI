@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Hash;
 
 class DosenResource extends Resource
 {
@@ -61,10 +62,31 @@ class DosenResource extends Resource
                         'pembimbing' => 'Pembimbing',
                         // 'penguji' => 'Penguji',
                     ])
-                    ->placeholder('Masukan Peran Dosen')
-                    ->required(),
-                TextInput::make('password')->required()->unique(false)
-                    ->placeholder('Masukan Password')
+                    ->required()
+                    ->dehydrated(true)
+                    ->live()
+                    ->afterStateHydrated(function ($component, $state) {
+                        $component->state('pembimbing');
+                    })
+                    ->afterStateUpdated(function ($state, $set) {
+                        if (blank($state)) {
+                            $set('peran', 'pembimbing');
+                        }
+                    }),
+                    TextInput::make('password')
+                    ->required(fn ($livewire) => $livewire instanceof \Filament\Resources\Pages\CreateRecord)
+                    ->dehydrated(fn ($state) => filled($state))
+                    // ->dehydrateStateUsing(fn ($state) => Hash::make($state)) // FUNGSI HASHING PASSWORD
+                    ->placeholder(fn ($livewire) => 
+                        $livewire instanceof \Filament\Resources\Pages\EditRecord 
+                            ? 'Biarkan kosong untuk mempertahankan password saat ini' 
+                            : 'Masukan Password'
+                    )
+                    ->helperText(fn ($livewire) => 
+                        $livewire instanceof \Filament\Resources\Pages\EditRecord 
+                            ? 'Biarkan kosong jika tidak ingin mengubah password' 
+                            : null
+                    )
             ]);
     }
 

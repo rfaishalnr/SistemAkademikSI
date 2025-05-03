@@ -52,6 +52,15 @@ class AdminPanelProvider extends PanelProvider
             ->sidebarCollapsibleOnDesktop()
             ->brandName('Sistem Akademik')
             // ->brandLogo(asset('images/logo.svg'))
+            ->navigationGroups([
+                'main', // Untuk Dashboard
+                'Ketentuan',
+                'Kelola Users',
+                'Kelola Pengajuan KP',
+                'Kelola Pengajuan TA',
+                'Filament Shield',
+            ])
+
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

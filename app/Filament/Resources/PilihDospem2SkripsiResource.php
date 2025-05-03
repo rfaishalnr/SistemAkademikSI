@@ -22,9 +22,19 @@ class PilihDospem2SkripsiResource extends Resource
     protected static ?string $model = PilihDospem2Skripsi::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
-    protected static ?string $navigationLabel = 'Review Dosen Pembimbing 2';
+    protected static ?string $navigationLabel = 'Review Pembimbing 2';
     protected static ?string $pluralModelLabel = 'Review Dosen Pembimbing 2';
     protected static ?string $navigationGroup = 'Kelola Pengajuan TA';
+
+    public static function getNavigationGroup(): ?string
+{
+    return 'Kelola Pengajuan TA';
+}
+
+public static function getNavigationSort(): int
+{
+    return 3; // Posisi ketiga
+}
 
     public static function getEloquentQuery(): EloquentBuilder
     {
