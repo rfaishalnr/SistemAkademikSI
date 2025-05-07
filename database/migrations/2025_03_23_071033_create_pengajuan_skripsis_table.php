@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('pengajuan_skripsis', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mahasiswa_id')->constrained('mahasiswas')->onDelete('cascade');
-            $table->string('files'); //Json ke string
+            $table->longtext('files'); //Json ke string
             $table->string('statuses')->nullable(); //Json ke string
             $table->timestamps();
         });

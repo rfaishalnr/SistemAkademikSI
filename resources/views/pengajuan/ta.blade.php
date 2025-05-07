@@ -167,32 +167,26 @@
                             <td class="px-4 py-3">{{ $counter }}</td>
                             <td class="px-4 py-3">{{ $ketentuan->persyaratan }}</td>
                             <td class="px-4 py-3">
-                                {{-- Tampilkan status dan link file jika ada --}}
-                                @if ($filePath)
-                                    <div class="flex items-center space-x-2">
-                                        <a href="{{ asset('storage/' . $filePath) }}"
-                                            class="text-blue-600 text-sm underline" target="_blank">Lihat
-                                            File</a>
-                                        <span
-                                            class="inline-block text-xs px-2 py-1 rounded 
-                                        {{ $fileStatus === 'accepted'
-                                            ? 'bg-green-100 text-green-800'
-                                            : ($fileStatus === 'rejected'
-                                                ? 'bg-red-100 text-red-800'
-                                                : 'bg-gray-100 text-gray-800') }}">
-                                            {{ $statusLabelMap[$fileStatus] ?? ucfirst($fileStatus) }}
-                                        </span>
-                                    </div>
-                                @endif
-
-                                {{-- Input file jika belum ada file atau ditolak --}}
-                                @if (!$filePath || $isRejected)
-                                    <input type="file" name="files[{{ $ketentuan->id }}]"
-                                        class="mt-2 block w-full text-sm text-gray-500
-                                              file:mr-4 file:py-2 file:px-4
-                                              file:rounded-full file:border-0 file:text-sm file:font-semibold
-                                              file:bg-green-50 file:text-blue-700 hover:file:bg-blue-100"
-                                        {{ !$filePath ? 'required' : '' }}>
+                                {{-- Selalu tampilkan input file, tidak perlu lihat file lama --}}
+                                <input type="file" name="files[{{ $ketentuan->id }}]"
+                                    class="block w-full text-sm text-gray-500
+                                          file:mr-4 file:py-2 file:px-4
+                                          file:rounded-full file:border-0 file:text-sm file:font-semibold
+                                          file:bg-green-50 file:text-blue-700 hover:file:bg-blue-100"
+                                    required>
+                                
+                                {{-- Hanya tampilkan status jika ada --}}
+                                @if ($fileStatus)
+                                    <span
+                                        class="inline-block text-xs px-2 py-1 mt-1 rounded 
+                                    {{ $fileStatus === 'accepted'
+                                        ? 'bg-green-100 text-green-800'
+                                        : ($fileStatus === 'rejected'
+                                            ? 'bg-red-100 text-red-800'
+                                            : 'bg-gray-100 text-gray-800') }}">
+                                        {{ $statusLabelMap[$fileStatus] ?? ucfirst($fileStatus) }}
+                                    </span>
+                                    
                                     @if ($isRejected)
                                         <p class="text-sm text-red-600 mt-1">File sebelumnya ditolak.
                                             Silakan unggah ulang.</p>

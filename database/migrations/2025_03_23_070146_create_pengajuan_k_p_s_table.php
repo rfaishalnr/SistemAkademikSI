@@ -10,7 +10,7 @@ return new class extends Migration {
         Schema::create('pengajuan_k_p_s', function (Blueprint $table) {
             $table->id();
             $table->foreignId('mahasiswa_id')->constrained('mahasiswas')->onDelete('cascade'); // Hubungkan dengan user (mahasiswa)
-            $table->string('files'); // Menyimpan file dalam bentuk JSON
+            $table->longtext('files'); // Menyimpan file dalam bentuk JSON
             $table->string('statuses')->nullable(); // Status tiap file
             $table->timestamps();
         });
