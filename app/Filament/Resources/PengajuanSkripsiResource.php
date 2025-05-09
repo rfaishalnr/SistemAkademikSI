@@ -48,30 +48,36 @@ public static function getNavigationSort(): int
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form
-            ->schema([
-                Select::make('mahasiswa_id')
-                    ->label('Mahasiswa')
-                    ->options(Mahasiswa::all()->pluck('name', 'id'))
-                    ->searchable()
-                    ->required(),
+        ->schema([
+            Select::make('mahasiswa_id')
+                ->label('Mahasiswa')
+                ->options(Mahasiswa::all()->pluck('name', 'id')->toArray())
+                ->searchable()
+                ->required(),
 
-                Repeater::make('files')
-                    ->label('Unggah Berkas')
-                    ->schema([
-                        Select::make('nama_berkas')
-                            ->label('Jenis Berkas')
-                            ->options(fn () => Ketentuan::where('jenis', 'Skripsi')->pluck('persyaratan', 'persyaratan'))
-                            ->required(),
+            Repeater::make('files')
+                ->label('Unggah Berkas')
+                ->schema([
+                    Select::make('nama_berkas')
+                        ->label('Jenis Berkas')
+                        ->options(function () {
+                            $ketentuan = Ketentuan::where('jenis', 'Skripsi')->pluck('persyaratan', 'persyaratan')->toArray();
+                            // Memastikan tidak ada nilai null di array options
+                            return array_filter($ketentuan, function($key, $value) {
+                                return $key !== null && $value !== null;
+                            }, ARRAY_FILTER_USE_BOTH);
+                        })
+                        ->required(),
 
-                        FileUpload::make('file')
-                            ->label('File')
-                            ->disk('public')
-                            ->directory('skripsi')
-                            ->required(),
-                    ])
-                    ->minItems(1)
-                    ->maxItems(5),
-            ]);
+                    FileUpload::make('file')
+                        ->label('File')
+                        ->disk('public')
+                        ->directory('skripsi')
+                        ->required(),
+                ])
+                ->minItems(1)
+                ->maxItems(5),
+        ]);
     }
 
     public static function table(Tables\Table $table): Tables\Table

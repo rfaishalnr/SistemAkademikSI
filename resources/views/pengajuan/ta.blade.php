@@ -132,82 +132,84 @@
             <div class="bg-white shadow-lg rounded-lg p-6">
 
 
-{{-- Form Upload Berkas --}}
-<form action="{{ route('mahasiswa.submit-ta') }}" method="POST" enctype="multipart/form-data">
-    @csrf
+                {{-- Form Upload Berkas --}}
+                <form action="{{ route('mahasiswa.submit-ta') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
 
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Berkas yang Harus Diupload</h2>
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Berkas yang Harus Diupload</h2>
 
-    <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200">
-        <table class="w-full bg-white border border-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Berkas</th>
-                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Upload File</th>
-                </tr>
-            </thead>
-            <tbody>
-                @php $counter = 1; @endphp
-                @foreach ($ketentuans as $ketentuan)
-                    @if(isset($ketentuan->persyaratan) && !empty(trim($ketentuan->persyaratan)))
-                        @php
-                            // Ambil file path & status per ketentuan
-                            $filePath = $pengajuan->files[$ketentuan->id] ?? null;
-                            $fileStatus = $pengajuan->statuses[$ketentuan->id] ?? null;
-                            $statusLabelMap = [
-                                'accepted' => 'Disetujui',
-                                'rejected' => 'Ditolak',
-                                'pending' => 'Menunggu',
-                            ];
-                            $isRejected = $fileStatus === 'rejected';
-                        @endphp
+                    <div class="overflow-x-auto rounded-lg shadow-sm border border-gray-200">
+                        <table class="w-full bg-white border border-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama
+                                        Berkas</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Upload
+                                        File</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $counter = 1; @endphp
+                                @foreach ($ketentuans as $ketentuan)
+                                    @if (isset($ketentuan->persyaratan) && !empty(trim($ketentuan->persyaratan)))
+                                        @php
+                                            // Ambil file path & status per ketentuan
+                                            $filePath = $pengajuan->files[$ketentuan->id] ?? null;
+                                            $fileStatus = $pengajuan->statuses[$ketentuan->id] ?? null;
+                                            $statusLabelMap = [
+                                                'accepted' => 'Disetujui',
+                                                'rejected' => 'Ditolak',
+                                                'pending' => 'Menunggu',
+                                            ];
+                                            $isRejected = $fileStatus === 'rejected';
+                                        @endphp
 
-                        <tr class="border-b border-gray-200 hover:bg-gray-50">
-                            <td class="px-4 py-3">{{ $counter }}</td>
-                            <td class="px-4 py-3">{{ $ketentuan->persyaratan }}</td>
-                            <td class="px-4 py-3">
-                                {{-- Selalu tampilkan input file, tidak perlu lihat file lama --}}
-                                <input type="file" name="files[{{ $ketentuan->id }}]"
-                                    class="block w-full text-sm text-gray-500
+                                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                                            <td class="px-4 py-3">{{ $counter }}</td>
+                                            <td class="px-4 py-3">{{ $ketentuan->persyaratan }}</td>
+                                            <td class="px-4 py-3">
+                                                {{-- Selalu tampilkan input file, tidak perlu lihat file lama --}}
+                                                <input type="file" name="files[{{ $ketentuan->id }}]"
+                                                    class="block w-full text-sm text-gray-500
                                           file:mr-4 file:py-2 file:px-4
                                           file:rounded-full file:border-0 file:text-sm file:font-semibold
                                           file:bg-green-50 file:text-blue-700 hover:file:bg-blue-100"
-                                    required>
-                                
-                                {{-- Hanya tampilkan status jika ada --}}
-                                @if ($fileStatus)
-                                    <span
-                                        class="inline-block text-xs px-2 py-1 mt-1 rounded 
+                                                    required>
+
+                                                {{-- Hanya tampilkan status jika ada --}}
+                                                @if ($fileStatus)
+                                                    <span
+                                                        class="inline-block text-xs px-2 py-1 mt-1 rounded 
                                     {{ $fileStatus === 'accepted'
                                         ? 'bg-green-100 text-green-800'
                                         : ($fileStatus === 'rejected'
                                             ? 'bg-red-100 text-red-800'
                                             : 'bg-gray-100 text-gray-800') }}">
-                                        {{ $statusLabelMap[$fileStatus] ?? ucfirst($fileStatus) }}
-                                    </span>
-                                    
-                                    @if ($isRejected)
-                                        <p class="text-sm text-red-600 mt-1">File sebelumnya ditolak.
-                                            Silakan unggah ulang.</p>
-                                    @endif
-                                @endif
-                            </td>
-                        </tr>
-                        @php $counter++; @endphp
-                    @endif
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                                                        {{ $statusLabelMap[$fileStatus] ?? ucfirst($fileStatus) }}
+                                                    </span>
 
-    <div class="mt-6">
-        <button type="submit"
-            class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center">
-            <i data-lucide="upload" class="mr-2"></i> Kirim Pengajuan
-        </button>
-    </div>
-</form>
+                                                    @if ($isRejected)
+                                                        <p class="text-sm text-red-600 mt-1">File sebelumnya ditolak.
+                                                            Silakan unggah ulang.</p>
+                                                    @endif
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @php $counter++; @endphp
+                                    @endif
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-6">
+                        <button type="submit"
+                            class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition flex items-center">
+                            <i data-lucide="upload" class="mr-2"></i> Kirim Pengajuan
+                        </button>
+                    </div>
+                </form>
 
                 <hr class="my-8 border-gray-200">
 
@@ -346,253 +348,351 @@
                                                     : null;
                                             @endphp
 
-<form action="{{ route('mahasiswa.pilih-pembimbing', $pengajuan->id) }}" method="POST">
-    @csrf
-    <div class="mb-3 space-y-6">
-        <!-- Dosen Pembimbing 1 -->
-        <div>
-            <label for="dosen_pembimbing_id" class="block text-sm font-medium text-gray-700 mb-1">
-                Pilih Dosen Pembimbing 1
-            </label>
+<form action="{{ route('mahasiswa.pilih-pembimbing', $pengajuan->id) }}"
+    method="POST">
+  @csrf
+  <div class="mb-3 space-y-6">
+      <!-- Dosen Pembimbing 1 -->
+      <div>
+          <label for="dosen_pembimbing_id"
+              class="block text-sm font-medium text-gray-700 mb-1">
+              Pilih Dosen Pembimbing 1
+          </label>
 
-            @if ($isAccepted1 && $dosenPembimbing1)
-                <!-- Jika dosen pembimbing 1 sudah disetujui, tampilkan informasi saja -->
-                <div class="p-4 bg-green-50 border border-green-200 rounded-lg shadow-sm">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="text-green-700 font-medium">Dosen Pembimbing 1 yang disetujui:</span>
-                    </div>
-                    <div class="mt-2 ml-7 text-green-700 font-medium">
-                        {{ $dosenPembimbing1->name }} - {{ $dosenPembimbing1->nidn }}
-                    </div>
-                    <!-- Tambahkan hidden input untuk menyimpan ID dosen yang sudah disetujui -->
-                    <input type="hidden" name="dosen_pembimbing_id" value="{{ $dospem1Id }}">
-                </div>
-            @elseif ($isRejected1 || !$dospem1Id)
-                <!-- Custom Dropdown for Pembimbing 1 -->
-                <div id="custom-dropdown-1" class="relative">
-                    <div class="custom-select-header cursor-pointer p-3 rounded-lg flex justify-between items-center border border-gray-300 bg-white shadow-sm {{ $isRejected1 ? 'border-red-300' : '' }}">
-                        <span id="selected-dosen-1" class="text-gray-700">-- Pilih Dosen Pembimbing 1 --</span>
-                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </div>
-                    <div class="custom-select-options hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
-                        <div class="sticky top-0 bg-white shadow-sm z-20">
-                            <input type="text" class="search-input p-3 w-full border-b border-gray-200 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-green-300" placeholder="Cari dosen...">
-                        </div>
-                        <div class="py-1">
-                            @foreach ($dosens as $dosen)
-                                @if (strtolower($dosen->peran) === 'pembimbing')
-                                    @if ($dosen->id != $dospem1Ditolak)
-                                        <div class="dosen-option p-3 hover:bg-green-50 cursor-pointer" data-value="{{ $dosen->id }}" data-selected="{{ $dospem1Id == $dosen->id ? 'true' : 'false' }}">
-                                            <div class="font-medium">{{ $dosen->name }}</div>
-                                            <div class="text-sm text-gray-500">NIDN: {{ $dosen->nidn }}</div>
-                                        </div>
-                                    @endif
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-                    <input type="hidden" name="dosen_pembimbing_id" id="dosen_pembimbing_id" value="{{ $dospem1Id }}">
-                </div>
-            @else
-                <!-- Jika pending, tampilkan informasi yang dipilih tetapi tidak bisa diubah -->
-                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm1-9a1 1 0 100 2 1 1 0 000-2z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="text-yellow-700 font-medium">Dosen Pembimbing 1 yang dipilih (menunggu konfirmasi):</span>
-                    </div>
-                    <div class="mt-2 ml-7 text-yellow-700 font-medium">
-                        {{ $dosenPembimbing1->name }} - {{ $dosenPembimbing1->nidn }}
-                    </div>
-                    <input type="hidden" name="dosen_pembimbing_id" value="{{ $dospem1Id }}">
-                </div>
-            @endif
+          @if ($isAccepted1 && $dosenPembimbing1)
+              <!-- Jika dosen pembimbing 1 sudah disetujui, tampilkan informasi saja -->
+              <div
+                  class="p-4 bg-green-50 border border-green-200 rounded-lg shadow-sm">
+                  <div class="flex items-center">
+                      <svg class="w-5 h-5 text-green-500 mr-2"
+                          fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clip-rule="evenodd"></path>
+                      </svg>
+                      <span class="text-green-700 font-medium">Dosen
+                          Pembimbing 1 yang disetujui:</span>
+                  </div>
+                  <div class="mt-2 ml-7 text-green-700 font-medium">
+                      {{ $dosenPembimbing1->name }} -
+                      {{ $dosenPembimbing1->nidn }}
+                  </div>
+                  <!-- Tambahkan hidden input untuk menyimpan ID dosen yang sudah disetujui -->
+                  <input type="hidden" name="dosen_pembimbing_id"
+                      value="{{ $dospem1Id }}">
+              </div>
+          @elseif ($isRejected1 || !$dospem1Id)
+              <!-- Custom Dropdown for Pembimbing 1 -->
+              <div id="custom-dropdown-1" class="relative">
+                  <div
+                      class="custom-select-header cursor-pointer p-3 rounded-lg flex justify-between items-center border border-gray-300 bg-white shadow-sm {{ $isRejected1 ? 'border-red-300' : '' }}">
+                      <span id="selected-dosen-1"
+                          class="text-gray-700">-- Pilih Dosen Pembimbing
+                          1 --</span>
+                      <svg class="w-5 h-5 text-gray-500" fill="none"
+                          stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round"
+                              stroke-linejoin="round" stroke-width="2"
+                              d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                  </div>
+                  <div
+                      class="custom-select-options hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+                      <div class="sticky top-0 bg-white shadow-sm z-20">
+                          <input type="text"
+                              class="search-input p-3 w-full border-b border-gray-200 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-green-300"
+                              placeholder="Cari dosen...">
+                      </div>
+                      <div class="py-1">
+                          @foreach ($dosens as $dosen)
+                              @if (strtolower($dosen->peran) === 'pembimbing')
+                                  @php
+                                      $isDosenAccepted = ($isAccepted2 && $dospem2Id == $dosen->id);
+                                  @endphp
+                                  @if ($dosen->id != $dospem1Ditolak && !$isDosenAccepted)
+                                      <div class="dosen-option p-3 hover:bg-green-50 cursor-pointer"
+                                          data-value="{{ $dosen->id }}"
+                                          data-selected="{{ $dospem1Id == $dosen->id ? 'true' : 'false' }}">
+                                          <div class="font-medium">
+                                              {{ $dosen->name }}</div>
+                                          <div
+                                              class="text-sm text-gray-500">
+                                              NIDN: {{ $dosen->nidn }}
+                                          </div>
+                                      </div>
+                                  @endif
+                              @endif
+                          @endforeach
+                      </div>
+                  </div>
+                  <input type="hidden" name="dosen_pembimbing_id"
+                      id="dosen_pembimbing_id"
+                      value="{{ $dospem1Id }}">
+              </div>
+          @else
+              <!-- Jika pending, tampilkan informasi yang dipilih tetapi tidak bisa diubah -->
+              <div
+                  class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
+                  <div class="flex items-center">
+                      <svg class="w-5 h-5 text-yellow-500 mr-2"
+                          fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm1-9a1 1 0 100 2 1 1 0 000-2z"
+                              clip-rule="evenodd"></path>
+                      </svg>
+                      <span class="text-yellow-700 font-medium">Dosen
+                          Pembimbing 1 yang dipilih (menunggu
+                          konfirmasi):</span>
+                  </div>
+                  <div class="mt-2 ml-7 text-yellow-700 font-medium">
+                      {{ $dosenPembimbing1->name }} -
+                      {{ $dosenPembimbing1->nidn }}
+                  </div>
+                  <input type="hidden" name="dosen_pembimbing_id"
+                      value="{{ $dospem1Id }}">
+              </div>
+          @endif
 
-            <div class="mt-3">
-                @php
-                    $statusClass1 = match ($status1) {
-                        'pending' => 'bg-yellow-100 text-yellow-800 border-yellow-300',
-                        'accepted' => 'bg-green-100 text-green-800 border-green-300',
-                        'rejected' => 'bg-red-100 text-red-800 border-red-300',
-                        default => 'bg-gray-100 text-gray-800 border-gray-300',
-                    };
+          <div class="mt-3">
+              @php
+                  $statusClass1 = match ($status1) {
+                      'pending'
+                          => 'bg-yellow-100 text-yellow-800 border-yellow-300',
+                      'accepted'
+                          => 'bg-green-100 text-green-800 border-green-300',
+                      'rejected'
+                          => 'bg-red-100 text-red-800 border-red-300',
+                      default
+                          => 'bg-gray-100 text-gray-800 border-gray-300',
+                  };
 
-                    $statusLabel1 = match ($status1) {
-                        'pending' => 'Menunggu Konfirmasi',
-                        'accepted' => 'Diterima',
-                        'rejected' => 'Ditolak',
-                        default => ucfirst($status1),
-                    };
-                @endphp
+                  $statusLabel1 = match ($status1) {
+                      'pending' => 'Menunggu Konfirmasi',
+                      'accepted' => 'Diterima',
+                      'rejected' => 'Ditolak',
+                      default => ucfirst($status1),
+                  };
+              @endphp
 
-                @if ($dospem1Id)
-                    <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full border {{ $statusClass1 }}">
-                        Status Pembimbing 1: {{ $statusLabel1 }}
-                    </span>
-                @endif
+              @if ($dospem1Id)
+                  <span
+                      class="inline-block px-3 py-1 text-xs font-semibold rounded-full border {{ $statusClass1 }}">
+                      Status Pembimbing 1: {{ $statusLabel1 }}
+                  </span>
+              @endif
 
-                @if ($isRejected1 && $pengajuan->catatan_pembimbing)
-                    <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <div class="flex items-start">
-                            <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
-                            </svg>
-                            <div>
-                                <p class="font-medium text-red-700">Catatan Dosen:</p>
-                                <p class="text-sm text-red-600">{{ $pengajuan->catatan_pembimbing }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </div>
+              @if ($isRejected1 && $pengajuan->catatan_pembimbing)
+                  <div
+                      class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <div class="flex items-start">
+                          <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5"
+                              fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                          </svg>
+                          <div>
+                              <p class="font-medium text-red-700">Catatan
+                                  Dosen:</p>
+                              <p class="text-sm text-red-600">
+                                  {{ $pengajuan->catatan_pembimbing }}
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+              @endif
+          </div>
+      </div>
 
-        <!-- Dosen Pembimbing 2 -->
-        <div>
-            <label for="dosen_pembimbing_2_id" class="block text-sm font-medium text-gray-700 mb-1">
-                Pilih Dosen Pembimbing 2
-            </label>
+      <!-- Dosen Pembimbing 2 -->
+      <div>
+          <label for="dosen_pembimbing_2_id"
+              class="block text-sm font-medium text-gray-700 mb-1">
+              Pilih Dosen Pembimbing 2
+          </label>
 
-            @if ($isAccepted2 && $dosenPembimbing2)
-                <!-- Jika dosen pembimbing 2 sudah disetujui, tampilkan informasi saja -->
-                <div class="p-4 bg-green-50 border border-green-200 rounded-lg shadow-sm">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-green-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="text-green-700 font-medium">Dosen Pembimbing 2 yang disetujui:</span>
-                    </div>
-                    <div class="mt-2 ml-7 text-green-700 font-medium">
-                        {{ $dosenPembimbing2->name }} - {{ $dosenPembimbing2->nidn }}
-                    </div>
-                    <!-- Tambahkan hidden input untuk menyimpan ID dosen yang sudah disetujui -->
-                    <input type="hidden" name="dosen_pembimbing_2_id" value="{{ $dospem2Id }}">
-                </div>
-            @elseif ($isRejected2 || (!$dospem2Id && ($isAccepted1 || $status1 == 'pending')))
-                <!-- Custom Dropdown for Pembimbing 2 -->
-                <div id="custom-dropdown-2" class="relative" data-disabled="{{ (!$dospem1Id || $status1 == 'rejected') ? 'true' : 'false' }}">
-                    <div class="custom-select-header cursor-pointer p-3 rounded-lg flex justify-between items-center border border-gray-300 bg-white shadow-sm {{ $isRejected2 ? 'border-red-300' : '' }} {{ (!$dospem1Id || $status1 == 'rejected') ? 'opacity-50' : '' }}">
-                        <span id="selected-dosen-2" class="text-gray-700">-- Pilih Dosen Pembimbing 2 --</span>
-                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </div>
-                    <div class="custom-select-options hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
-                        <div class="sticky top-0 bg-white shadow-sm z-20">
-                            <input type="text" class="search-input p-3 w-full border-b border-gray-200 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-green-300" placeholder="Cari dosen...">
-                        </div>
-                        <div class="py-1">
-                            @foreach ($dosens as $dosen)
-                                @if (strtolower($dosen->peran) === 'pembimbing')
-                                    @if ($dosen->id != $dospem2Ditolak && $dosen->id != $dospem1Id)
-                                        <div class="dosen-option p-3 hover:bg-green-50 cursor-pointer" data-value="{{ $dosen->id }}" data-dosen-id="{{ $dosen->id }}" data-selected="{{ $dospem2Id == $dosen->id ? 'true' : 'false' }}">
-                                            <div class="font-medium">{{ $dosen->name }}</div>
-                                            <div class="text-sm text-gray-500">NIDN: {{ $dosen->nidn }}</div>
-                                        </div>
-                                    @endif
-                                @endif
-                            @endforeach
-                        </div>
-                    </div>
-                    <input type="hidden" name="dosen_pembimbing_2_id" id="dosen_pembimbing_2_id" value="{{ $dospem2Id }}">
-                </div>
-            @else
-                <!-- Jika pending, tampilkan informasi yang dipilih tetapi tidak bisa diubah -->
-                <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
-                    <div class="flex items-center">
-                        <svg class="w-5 h-5 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd"
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm1-9a1 1 0 100 2 1 1 0 000-2z"
-                                clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="text-yellow-700 font-medium">Dosen Pembimbing 2 yang dipilih (menunggu konfirmasi):</span>
-                    </div>
-                    <div class="mt-2 ml-7 text-yellow-700 font-medium">
-                        {{ $dosenPembimbing2->name }} - {{ $dosenPembimbing2->nidn }}
-                    </div>
-                    <input type="hidden" name="dosen_pembimbing_2_id" value="{{ $dospem2Id }}">
-                </div>
-            @endif
+          @if ($isAccepted2 && $dosenPembimbing2)
+              <!-- Jika dosen pembimbing 2 sudah disetujui, tampilkan informasi saja -->
+              <div
+                  class="p-4 bg-green-50 border border-green-200 rounded-lg shadow-sm">
+                  <div class="flex items-center">
+                      <svg class="w-5 h-5 text-green-500 mr-2"
+                          fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clip-rule="evenodd"></path>
+                      </svg>
+                      <span class="text-green-700 font-medium">Dosen
+                          Pembimbing 2 yang disetujui:</span>
+                  </div>
+                  <div class="mt-2 ml-7 text-green-700 font-medium">
+                      {{ $dosenPembimbing2->name }} -
+                      {{ $dosenPembimbing2->nidn }}
+                  </div>
+                  <!-- Tambahkan hidden input untuk menyimpan ID dosen yang sudah disetujui -->
+                  <input type="hidden" name="dosen_pembimbing_2_id"
+                      value="{{ $dospem2Id }}">
+              </div>
+          @elseif ($isRejected2 || (!$dospem2Id && ($isAccepted1 || $status1 == 'pending')))
+              <!-- Custom Dropdown for Pembimbing 2 -->
+              <div id="custom-dropdown-2" class="relative"
+                  data-disabled="{{ !$dospem1Id || $status1 == 'rejected' ? 'true' : 'false' }}">
+                  <div
+                      class="custom-select-header cursor-pointer p-3 rounded-lg flex justify-between items-center border border-gray-300 bg-white shadow-sm {{ $isRejected2 ? 'border-red-300' : '' }} {{ !$dospem1Id || $status1 == 'rejected' ? 'opacity-50' : '' }}">
+                      <span id="selected-dosen-2"
+                          class="text-gray-700">-- Pilih Dosen Pembimbing
+                          2 --</span>
+                      <svg class="w-5 h-5 text-gray-500" fill="none"
+                          stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round"
+                              stroke-linejoin="round" stroke-width="2"
+                              d="M19 9l-7 7-7-7"></path>
+                      </svg>
+                  </div>
+                  <div
+                      class="custom-select-options hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+                      <div class="sticky top-0 bg-white shadow-sm z-20">
+                          <input type="text"
+                              class="search-input p-3 w-full border-b border-gray-200 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-green-300"
+                              placeholder="Cari dosen...">
+                      </div>
+                      <div class="py-1">
+                          @foreach ($dosens as $dosen)
+                              @if (strtolower($dosen->peran) === 'pembimbing')
+                                  @php
+                                      $isDosenAccepted = (($isAccepted1 && $dospem1Id == $dosen->id) || ($dosen->id == $dospem1Id && $status1 == 'pending'));
+                                  @endphp
+                                  @if ($dosen->id != $dospem2Ditolak && !$isDosenAccepted)
+                                      <div class="dosen-option p-3 hover:bg-green-50 cursor-pointer"
+                                          data-value="{{ $dosen->id }}"
+                                          data-dosen-id="{{ $dosen->id }}"
+                                          data-selected="{{ $dospem2Id == $dosen->id ? 'true' : 'false' }}">
+                                          <div class="font-medium">
+                                              {{ $dosen->name }}</div>
+                                          <div
+                                              class="text-sm text-gray-500">
+                                              NIDN: {{ $dosen->nidn }}
+                                          </div>
+                                      </div>
+                                  @endif
+                              @endif
+                          @endforeach
+                      </div>
+                  </div>
+                  <input type="hidden" name="dosen_pembimbing_2_id"
+                      id="dosen_pembimbing_2_id"
+                      value="{{ $dospem2Id }}">
+              </div>
+          @else
+              <!-- Jika pending, tampilkan informasi yang dipilih tetapi tidak bisa diubah -->
+              <div
+                  class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
+                  <div class="flex items-center">
+                      <svg class="w-5 h-5 text-yellow-500 mr-2"
+                          fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm1-9a1 1 0 100 2 1 1 0 000-2z"
+                              clip-rule="evenodd"></path>
+                      </svg>
+                      <span class="text-yellow-700 font-medium">Dosen
+                          Pembimbing 2 yang dipilih (menunggu
+                          konfirmasi):</span>
+                  </div>
+                  <div class="mt-2 ml-7 text-yellow-700 font-medium">
+                      {{ $dosenPembimbing2->name }} -
+                      {{ $dosenPembimbing2->nidn }}
+                  </div>
+                  <input type="hidden" name="dosen_pembimbing_2_id"
+                      value="{{ $dospem2Id }}">
+              </div>
+          @endif
 
-            <div class="mt-3">
-                @php
-                    $statusClass2 = match ($status2) {
-                        'pending' => 'bg-yellow-100 text-yellow-800 border-yellow-300',
-                        'accepted' => 'bg-green-100 text-green-800 border-green-300',
-                        'rejected' => 'bg-red-100 text-red-800 border-red-300',
-                        default => 'bg-gray-100 text-gray-800 border-gray-300',
-                    };
+          <div class="mt-3">
+              @php
+                  $statusClass2 = match ($status2) {
+                      'pending'
+                          => 'bg-yellow-100 text-yellow-800 border-yellow-300',
+                      'accepted'
+                          => 'bg-green-100 text-green-800 border-green-300',
+                      'rejected'
+                          => 'bg-red-100 text-red-800 border-red-300',
+                      default
+                          => 'bg-gray-100 text-gray-800 border-gray-300',
+                  };
 
-                    $statusLabel2 = match ($status2) {
-                        'pending' => 'Menunggu Konfirmasi',
-                        'accepted' => 'Diterima',
-                        'rejected' => 'Ditolak',
-                        default => ucfirst($status2),
-                    };
-                @endphp
+                  $statusLabel2 = match ($status2) {
+                      'pending' => 'Menunggu Konfirmasi',
+                      'accepted' => 'Diterima',
+                      'rejected' => 'Ditolak',
+                      default => ucfirst($status2),
+                  };
+              @endphp
 
-                @if ($dospem2Id)
-                    <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full border {{ $statusClass2 }}">
-                        Status Pembimbing 2: {{ $statusLabel2 }}
-                    </span>
-                @endif
+              @if ($dospem2Id)
+                  <span
+                      class="inline-block px-3 py-1 text-xs font-semibold rounded-full border {{ $statusClass2 }}">
+                      Status Pembimbing 2: {{ $statusLabel2 }}
+                  </span>
+              @endif
 
-                @if ($isRejected2 && $pengajuan->catatan_pembimbing_2)
-                    <div class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <div class="flex items-start">
-                            <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path>
-                            </svg>
-                            <div>
-                                <p class="font-medium text-red-700">Catatan Dosen:</p>
-                                <p class="text-sm text-red-600">{{ $pengajuan->catatan_pembimbing_2 }}</p>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </div>
-    </div>
+              @if ($isRejected2 && $pengajuan->catatan_pembimbing_2)
+                  <div
+                      class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <div class="flex items-start">
+                          <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5"
+                              fill="currentColor" viewBox="0 0 20 20">
+                              <path fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                  clip-rule="evenodd"></path>
+                          </svg>
+                          <div>
+                              <p class="font-medium text-red-700">Catatan
+                                  Dosen:</p>
+                              <p class="text-sm text-red-600">
+                                  {{ $pengajuan->catatan_pembimbing_2 }}
+                              </p>
+                          </div>
+                      </div>
+                  </div>
+              @endif
+          </div>
+      </div>
+  </div>
 
-    @php
-        // Tentukan apakah tombol submit perlu ditampilkan
-        $showSubmitButton = false;
-        
-        // Tombol submit ditampilkan jika:
-        // - Pembimbing 1 belum dipilih
-        // - Pembimbing 1 ditolak dan perlu pemilihan ulang
-        // - Pembimbing 2 belum dipilih (dan pembimbing 1 sudah diterima/pending)
-        // - Pembimbing 2 ditolak dan perlu pemilihan ulang
-        
-        if (!$dospem1Id || $isRejected1 || (!$dospem2Id && ($isAccepted1 || $status1 == 'pending')) || $isRejected2) {
-            $showSubmitButton = true;
-        }
-    @endphp
+  @php
+      // Tentukan apakah tombol submit perlu ditampilkan
+      $showSubmitButton = false;
 
-    @if ($showSubmitButton)
-        <div class="mt-6">
-            <button type="submit" class="w-full md:w-auto bg-green-600 text-white px-6 py-2.5 rounded-lg hover:bg-green-700 transition-colors shadow-sm flex items-center justify-center">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Simpan Dosen Pembimbing
-            </button>
-        </div>
-    @endif
+      // Tombol submit ditampilkan jika:
+      // - Pembimbing 1 belum dipilih
+      // - Pembimbing 1 ditolak dan perlu pemilihan ulang
+      // - Pembimbing 2 belum dipilih (dan pembimbing 1 sudah diterima/pending)
+      // - Pembimbing 2 ditolak dan perlu pemilihan ulang
+
+      if (
+          !$dospem1Id ||
+          $isRejected1 ||
+          (!$dospem2Id && ($isAccepted1 || $status1 == 'pending')) ||
+          $isRejected2
+      ) {
+          $showSubmitButton = true;
+      }
+  @endphp
+
+  @if ($showSubmitButton)
+      <div class="mt-6">
+          <button type="submit"
+              class="w-full md:w-auto bg-green-600 text-white px-6 py-2.5 rounded-lg hover:bg-green-700 transition-colors shadow-sm flex items-center justify-center">
+              <svg class="w-5 h-5 mr-2" fill="none"
+                  stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              Simpan Dosen Pembimbing
+          </button>
+      </div>
+  @endif
 </form>
-
 
 
                                             <!-- Tampilkan kontak dosen jika status accepted -->
@@ -697,210 +797,208 @@
     </footer>
 
     <script>
-document.addEventListener('DOMContentLoaded', function() {
-        // Setup custom dropdowns
-        setupCustomDropdowns();
-        
-        // Initialize other UI elements
-        document.getElementById("current-year").textContent = new Date().getFullYear();
-        if (typeof lucide !== 'undefined' && lucide.createIcons) {
-            lucide.createIcons();
-        }
-        
-        // User dropdown
-        const userMenuBtn = document.getElementById("userMenuBtn");
-        const userDropdown = document.getElementById("userDropdown");
+        document.addEventListener('DOMContentLoaded', function() {
+            // Setup custom dropdowns
+            setupCustomDropdowns();
 
-        if (userMenuBtn && userDropdown) {
-            userMenuBtn.addEventListener("click", function(event) {
-                event.stopPropagation();
-                userDropdown.classList.toggle("hidden");
-            });
-
-            document.addEventListener("click", function(event) {
-                if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
-                    userDropdown.classList.add("hidden");
-                }
-            });
-        }
-
-        // Mobile nav toggle
-        const mobileMenuBtn = document.getElementById("mobileMenuBtn");
-        const mobileNav = document.getElementById("mobileNav");
-
-        if (mobileMenuBtn && mobileNav) {
-            mobileMenuBtn.addEventListener("click", function() {
-                mobileNav.classList.toggle("hidden");
-            });
-        }
-    });
-
-    function setupCustomDropdowns() {
-        // Setup for Dropdown 1
-        const dropdown1 = document.getElementById('custom-dropdown-1');
-        if (dropdown1) {
-            const header1 = dropdown1.querySelector('.custom-select-header');
-            const options1 = dropdown1.querySelector('.custom-select-options');
-            const searchInput1 = dropdown1.querySelector('.search-input');
-            const hiddenInput1 = document.getElementById('dosen_pembimbing_id');
-            const selectedText1 = document.getElementById('selected-dosen-1');
-            
-            setupDropdown(dropdown1, header1, options1, searchInput1, hiddenInput1, selectedText1);
-            
-            // Pre-select option if there's a value
-            if (hiddenInput1.value) {
-                const selectedOption = dropdown1.querySelector(`.dosen-option[data-value="${hiddenInput1.value}"]`);
-                if (selectedOption) {
-                    selectOption(selectedOption, selectedText1, hiddenInput1);
-                }
+            // Initialize other UI elements
+            document.getElementById("current-year").textContent = new Date().getFullYear();
+            if (typeof lucide !== 'undefined' && lucide.createIcons) {
+                lucide.createIcons();
             }
-        }
-        
-        // Setup for Dropdown 2
-        const dropdown2 = document.getElementById('custom-dropdown-2');
-        if (dropdown2) {
-            const header2 = dropdown2.querySelector('.custom-select-header');
-            const options2 = dropdown2.querySelector('.custom-select-options');
-            const searchInput2 = dropdown2.querySelector('.search-input');
-            const hiddenInput2 = document.getElementById('dosen_pembimbing_2_id');
-            const selectedText2 = document.getElementById('selected-dosen-2');
-            
-            setupDropdown(dropdown2, header2, options2, searchInput2, hiddenInput2, selectedText2);
-            
-            // Pre-select option if there's a value
-            if (hiddenInput2.value) {
-                const selectedOption = dropdown2.querySelector(`.dosen-option[data-value="${hiddenInput2.value}"]`);
-                if (selectedOption) {
-                    selectOption(selectedOption, selectedText2, hiddenInput2);
-                }
+
+            // User dropdown
+            const userMenuBtn = document.getElementById("userMenuBtn");
+            const userDropdown = document.getElementById("userDropdown");
+
+            if (userMenuBtn && userDropdown) {
+                userMenuBtn.addEventListener("click", function(event) {
+                    event.stopPropagation();
+                    userDropdown.classList.toggle("hidden");
+                });
+
+                document.addEventListener("click", function(event) {
+                    if (!userMenuBtn.contains(event.target) && !userDropdown.contains(event.target)) {
+                        userDropdown.classList.add("hidden");
+                    }
+                });
             }
-        }
-        
-        // Initial update of dropdown states
-        updateDropdownStates();
-    }
-    
-    function setupDropdown(dropdown, header, options, searchInput, hiddenInput, selectedText) {
-        if (!dropdown || !header || !options || !searchInput || !hiddenInput || !selectedText) return;
-        
-        // Toggle dropdown on header click
-        header.addEventListener('click', function() {
-            // Check if dropdown is disabled
-            if (dropdown.getAttribute('data-disabled') === 'true') {
-                return;
-            }
-            
-            // Close all other dropdowns first
-            document.querySelectorAll('.custom-select-options').forEach(opt => {
-                if (opt !== options) {
-                    opt.classList.add('hidden');
-                }
-            });
-            
-            // Toggle current dropdown
-            options.classList.toggle('hidden');
-            
-            // Focus search input if dropdown is opened
-            if (!options.classList.contains('hidden')) {
-                searchInput.focus();
+
+            // Mobile nav toggle
+            const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+            const mobileNav = document.getElementById("mobileNav");
+
+            if (mobileMenuBtn && mobileNav) {
+                mobileMenuBtn.addEventListener("click", function() {
+                    mobileNav.classList.toggle("hidden");
+                });
             }
         });
-        
-        // Handle search functionality
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
+
+        function setupCustomDropdowns() {
+            // Setup for Dropdown 1
+            const dropdown1 = document.getElementById('custom-dropdown-1');
+            if (dropdown1) {
+                const header1 = dropdown1.querySelector('.custom-select-header');
+                const options1 = dropdown1.querySelector('.custom-select-options');
+                const searchInput1 = dropdown1.querySelector('.search-input');
+                const hiddenInput1 = document.getElementById('dosen_pembimbing_id');
+                const selectedText1 = document.getElementById('selected-dosen-1');
+
+                setupDropdown(dropdown1, header1, options1, searchInput1, hiddenInput1, selectedText1);
+
+                // Pre-select option if there's a value
+                if (hiddenInput1.value) {
+                    const selectedOption = dropdown1.querySelector(`.dosen-option[data-value="${hiddenInput1.value}"]`);
+                    if (selectedOption) {
+                        selectOption(selectedOption, selectedText1, hiddenInput1);
+                    }
+                }
+            }
+
+            // Setup for Dropdown 2
+            const dropdown2 = document.getElementById('custom-dropdown-2');
+            if (dropdown2) {
+                const header2 = dropdown2.querySelector('.custom-select-header');
+                const options2 = dropdown2.querySelector('.custom-select-options');
+                const searchInput2 = dropdown2.querySelector('.search-input');
+                const hiddenInput2 = document.getElementById('dosen_pembimbing_2_id');
+                const selectedText2 = document.getElementById('selected-dosen-2');
+
+                setupDropdown(dropdown2, header2, options2, searchInput2, hiddenInput2, selectedText2);
+
+                // Pre-select option if there's a value
+                if (hiddenInput2.value) {
+                    const selectedOption = dropdown2.querySelector(`.dosen-option[data-value="${hiddenInput2.value}"]`);
+                    if (selectedOption) {
+                        selectOption(selectedOption, selectedText2, hiddenInput2);
+                    }
+                }
+            }
+
+            // Initial update of dropdown states
+            updateDropdownStates();
+        }
+
+        function setupDropdown(dropdown, header, options, searchInput, hiddenInput, selectedText) {
+            if (!dropdown || !header || !options || !searchInput || !hiddenInput || !selectedText) return;
+
+            // Toggle dropdown on header click
+            header.addEventListener('click', function() {
+                // Check if dropdown is disabled
+                if (dropdown.getAttribute('data-disabled') === 'true') {
+                    return;
+                }
+
+                // Close all other dropdowns first
+                document.querySelectorAll('.custom-select-options').forEach(opt => {
+                    if (opt !== options) {
+                        opt.classList.add('hidden');
+                    }
+                });
+
+                // Toggle current dropdown
+                options.classList.toggle('hidden');
+
+                // Focus search input if dropdown is opened
+                if (!options.classList.contains('hidden')) {
+                    searchInput.focus();
+                }
+            });
+
+            // Handle search functionality
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const dosenOptions = options.querySelectorAll('.dosen-option');
+
+                dosenOptions.forEach(option => {
+                    const dosenName = option.querySelector('div:first-child').textContent.toLowerCase();
+                    const dosenNidn = option.querySelector('div:last-child').textContent.toLowerCase();
+
+                    if (dosenName.includes(searchTerm) || dosenNidn.includes(searchTerm)) {
+                        option.style.display = '';
+                    } else {
+                        option.style.display = 'none';
+                    }
+                });
+            });
+
+            // Handle option selection
             const dosenOptions = options.querySelectorAll('.dosen-option');
-            
             dosenOptions.forEach(option => {
-                const dosenName = option.querySelector('div:first-child').textContent.toLowerCase();
-                const dosenNidn = option.querySelector('div:last-child').textContent.toLowerCase();
-                
-                if (dosenName.includes(searchTerm) || dosenNidn.includes(searchTerm)) {
-                    option.style.display = '';
-                } else {
-                    option.style.display = 'none';
-                }
-            });
-        });
-        
-        // Handle option selection
-        const dosenOptions = options.querySelectorAll('.dosen-option');
-        dosenOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                selectOption(this, selectedText, hiddenInput);
-                options.classList.add('hidden');
-                
-                // Update dropdown state after selection
-                updateDropdownStates();
-            });
-        });
-        
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!dropdown.contains(event.target)) {
-                options.classList.add('hidden');
-            }
-        });
-    }
-    
-    function selectOption(option, selectedText, hiddenInput) {
-        if (!option || !selectedText || !hiddenInput) return;
-        
-        // Mark selected option
-        const allOptions = option.parentElement.querySelectorAll('.dosen-option');
-        allOptions.forEach(opt => {
-            opt.setAttribute('data-selected', 'false');
-            opt.classList.remove('bg-green-50');
-        });
-        
-        option.setAttribute('data-selected', 'true');
-        option.classList.add('bg-green-50');
-        
-        // Update selected text and hidden input
-        const dosenName = option.querySelector('div:first-child').textContent;
-        const dosenNidn = option.querySelector('div:last-child').textContent.replace('NIDN: ', '');
-        selectedText.textContent = `${dosenName} - ${dosenNidn}`;
-        hiddenInput.value = option.getAttribute('data-value');
-    }
-    
-    function updateDropdownStates() {
-        const dropdown1 = document.getElementById('custom-dropdown-1');
-        const dropdown2 = document.getElementById('custom-dropdown-2');
-        const dospem1Id = document.getElementById('dosen_pembimbing_id')?.value;
-        
-        if (!dropdown1 || !dropdown2) return;
-        
-        // Enable/disable dropdown 2 based on selection in dropdown 1
-        const isDisabled = !dospem1Id;
-        dropdown2.setAttribute('data-disabled', isDisabled ? 'true' : 'false');
-        
-        const header2 = dropdown2.querySelector('.custom-select-header');
-        if (header2) {
-            if (isDisabled) {
-                header2.classList.add('opacity-50');
-                header2.classList.add('cursor-not-allowed');
-                header2.classList.remove('cursor-pointer');
-            } else {
-                header2.classList.remove('opacity-50');
-                header2.classList.remove('cursor-not-allowed');
-                header2.classList.add('cursor-pointer');
-            }
-        }
-        
-        // Hide options in dropdown 2 that match the selected option in dropdown 1
-        if (dospem1Id && dropdown2) {
-            const dosenOptions2 = dropdown2.querySelectorAll('.dosen-option');
-            dosenOptions2.forEach(option => {
-                if (option.getAttribute('data-dosen-id') === dospem1Id) {
-                    option.style.display = 'none';
-                } else {
-                    option.style.display = '';
-                }
-            });
-        }
-    }
+                option.addEventListener('click', function() {
+                    selectOption(this, selectedText, hiddenInput);
+                    options.classList.add('hidden');
 
-        
+                    // Update dropdown state after selection
+                    updateDropdownStates();
+                });
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!dropdown.contains(event.target)) {
+                    options.classList.add('hidden');
+                }
+            });
+        }
+
+        function selectOption(option, selectedText, hiddenInput) {
+            if (!option || !selectedText || !hiddenInput) return;
+
+            // Mark selected option
+            const allOptions = option.parentElement.querySelectorAll('.dosen-option');
+            allOptions.forEach(opt => {
+                opt.setAttribute('data-selected', 'false');
+                opt.classList.remove('bg-green-50');
+            });
+
+            option.setAttribute('data-selected', 'true');
+            option.classList.add('bg-green-50');
+
+            // Update selected text and hidden input
+            const dosenName = option.querySelector('div:first-child').textContent;
+            const dosenNidn = option.querySelector('div:last-child').textContent.replace('NIDN: ', '');
+            selectedText.textContent = `${dosenName} - ${dosenNidn}`;
+            hiddenInput.value = option.getAttribute('data-value');
+        }
+
+        function updateDropdownStates() {
+            const dropdown1 = document.getElementById('custom-dropdown-1');
+            const dropdown2 = document.getElementById('custom-dropdown-2');
+            const dospem1Id = document.getElementById('dosen_pembimbing_id')?.value;
+
+            if (!dropdown1 || !dropdown2) return;
+
+            // Enable/disable dropdown 2 based on selection in dropdown 1
+            const isDisabled = !dospem1Id;
+            dropdown2.setAttribute('data-disabled', isDisabled ? 'true' : 'false');
+
+            const header2 = dropdown2.querySelector('.custom-select-header');
+            if (header2) {
+                if (isDisabled) {
+                    header2.classList.add('opacity-50');
+                    header2.classList.add('cursor-not-allowed');
+                    header2.classList.remove('cursor-pointer');
+                } else {
+                    header2.classList.remove('opacity-50');
+                    header2.classList.remove('cursor-not-allowed');
+                    header2.classList.add('cursor-pointer');
+                }
+            }
+
+            // Hide options in dropdown 2 that match the selected option in dropdown 1
+            if (dospem1Id && dropdown2) {
+                const dosenOptions2 = dropdown2.querySelectorAll('.dosen-option');
+                dosenOptions2.forEach(option => {
+                    if (option.getAttribute('data-dosen-id') === dospem1Id) {
+                        option.style.display = 'none';
+                    } else {
+                        option.style.display = '';
+                    }
+                });
+            }
+        }
     </script>
 </body>
 
