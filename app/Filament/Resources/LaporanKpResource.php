@@ -23,6 +23,9 @@ class LaporanKpResource extends Resource
     protected static ?string $navigationLabel = 'Review Laporan KP';
     protected static ?string $navigationGroup = 'Kelola Pengajuan KP';
 
+    // public static ?string $label = 'Laporan KP';
+
+
     public static function getNavigationGroup(): ?string
     {
         return 'Kelola Pengajuan KP';

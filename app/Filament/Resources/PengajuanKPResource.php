@@ -26,7 +26,10 @@ class PengajuanKPResource extends Resource
     protected static ?string $navigationLabel = 'Kelola Pengajuan KP';
     protected static ?string $slug = 'kelola-pengajuan-kp';
     protected static ?string $navigationGroup = 'Kelola Pengajuan KP';
-    
+   
+    // public static ?string $label = 'Pengajuan KP';
+
+
     public static function getNavigationGroup(): ?string
     {
         return 'Kelola Pengajuan KP';

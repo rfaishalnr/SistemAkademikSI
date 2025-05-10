@@ -348,351 +348,357 @@
                                                     : null;
                                             @endphp
 
-<form action="{{ route('mahasiswa.pilih-pembimbing', $pengajuan->id) }}"
-    method="POST">
-  @csrf
-  <div class="mb-3 space-y-6">
-      <!-- Dosen Pembimbing 1 -->
-      <div>
-          <label for="dosen_pembimbing_id"
-              class="block text-sm font-medium text-gray-700 mb-1">
-              Pilih Dosen Pembimbing 1
-          </label>
+                                            <form action="{{ route('mahasiswa.pilih-pembimbing', $pengajuan->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="mb-3 space-y-6">
+                                                    <!-- Dosen Pembimbing 1 -->
+                                                    <div>
+                                                        <label for="dosen_pembimbing_id"
+                                                            class="block text-sm font-medium text-gray-700 mb-1">
+                                                            Pilih Dosen Pembimbing 1
+                                                        </label>
 
-          @if ($isAccepted1 && $dosenPembimbing1)
-              <!-- Jika dosen pembimbing 1 sudah disetujui, tampilkan informasi saja -->
-              <div
-                  class="p-4 bg-green-50 border border-green-200 rounded-lg shadow-sm">
-                  <div class="flex items-center">
-                      <svg class="w-5 h-5 text-green-500 mr-2"
-                          fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clip-rule="evenodd"></path>
-                      </svg>
-                      <span class="text-green-700 font-medium">Dosen
-                          Pembimbing 1 yang disetujui:</span>
-                  </div>
-                  <div class="mt-2 ml-7 text-green-700 font-medium">
-                      {{ $dosenPembimbing1->name }} -
-                      {{ $dosenPembimbing1->nidn }}
-                  </div>
-                  <!-- Tambahkan hidden input untuk menyimpan ID dosen yang sudah disetujui -->
-                  <input type="hidden" name="dosen_pembimbing_id"
-                      value="{{ $dospem1Id }}">
-              </div>
-          @elseif ($isRejected1 || !$dospem1Id)
-              <!-- Custom Dropdown for Pembimbing 1 -->
-              <div id="custom-dropdown-1" class="relative">
-                  <div
-                      class="custom-select-header cursor-pointer p-3 rounded-lg flex justify-between items-center border border-gray-300 bg-white shadow-sm {{ $isRejected1 ? 'border-red-300' : '' }}">
-                      <span id="selected-dosen-1"
-                          class="text-gray-700">-- Pilih Dosen Pembimbing
-                          1 --</span>
-                      <svg class="w-5 h-5 text-gray-500" fill="none"
-                          stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round"
-                              stroke-linejoin="round" stroke-width="2"
-                              d="M19 9l-7 7-7-7"></path>
-                      </svg>
-                  </div>
-                  <div
-                      class="custom-select-options hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
-                      <div class="sticky top-0 bg-white shadow-sm z-20">
-                          <input type="text"
-                              class="search-input p-3 w-full border-b border-gray-200 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-green-300"
-                              placeholder="Cari dosen...">
-                      </div>
-                      <div class="py-1">
-                          @foreach ($dosens as $dosen)
-                              @if (strtolower($dosen->peran) === 'pembimbing')
-                                  @php
-                                      $isDosenAccepted = ($isAccepted2 && $dospem2Id == $dosen->id);
-                                  @endphp
-                                  @if ($dosen->id != $dospem1Ditolak && !$isDosenAccepted)
-                                      <div class="dosen-option p-3 hover:bg-green-50 cursor-pointer"
-                                          data-value="{{ $dosen->id }}"
-                                          data-selected="{{ $dospem1Id == $dosen->id ? 'true' : 'false' }}">
-                                          <div class="font-medium">
-                                              {{ $dosen->name }}</div>
-                                          <div
-                                              class="text-sm text-gray-500">
-                                              NIDN: {{ $dosen->nidn }}
-                                          </div>
-                                      </div>
-                                  @endif
-                              @endif
-                          @endforeach
-                      </div>
-                  </div>
-                  <input type="hidden" name="dosen_pembimbing_id"
-                      id="dosen_pembimbing_id"
-                      value="{{ $dospem1Id }}">
-              </div>
-          @else
-              <!-- Jika pending, tampilkan informasi yang dipilih tetapi tidak bisa diubah -->
-              <div
-                  class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
-                  <div class="flex items-center">
-                      <svg class="w-5 h-5 text-yellow-500 mr-2"
-                          fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm1-9a1 1 0 100 2 1 1 0 000-2z"
-                              clip-rule="evenodd"></path>
-                      </svg>
-                      <span class="text-yellow-700 font-medium">Dosen
-                          Pembimbing 1 yang dipilih (menunggu
-                          konfirmasi):</span>
-                  </div>
-                  <div class="mt-2 ml-7 text-yellow-700 font-medium">
-                      {{ $dosenPembimbing1->name }} -
-                      {{ $dosenPembimbing1->nidn }}
-                  </div>
-                  <input type="hidden" name="dosen_pembimbing_id"
-                      value="{{ $dospem1Id }}">
-              </div>
-          @endif
+                                                        @if ($isAccepted1 && $dosenPembimbing1)
+                                                            <!-- Jika dosen pembimbing 1 sudah disetujui, tampilkan informasi saja -->
+                                                            <div
+                                                                class="p-4 bg-green-50 border border-green-200 rounded-lg shadow-sm">
+                                                                <div class="flex items-center">
+                                                                    <svg class="w-5 h-5 text-green-500 mr-2"
+                                                                        fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path fill-rule="evenodd"
+                                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                                            clip-rule="evenodd"></path>
+                                                                    </svg>
+                                                                    <span class="text-green-700 font-medium">Dosen
+                                                                        Pembimbing 1 yang disetujui:</span>
+                                                                </div>
+                                                                <div class="mt-2 ml-7 text-green-700 font-medium">
+                                                                    {{ $dosenPembimbing1->name }} -
+                                                                    {{ $dosenPembimbing1->nidn }}
+                                                                </div>
+                                                                <!-- Tambahkan hidden input untuk menyimpan ID dosen yang sudah disetujui -->
+                                                                <input type="hidden" name="dosen_pembimbing_id"
+                                                                    value="{{ $dospem1Id }}">
+                                                            </div>
+                                                        @elseif ($isRejected1 || !$dospem1Id)
+                                                            <!-- Custom Dropdown for Pembimbing 1 -->
+                                                            <div id="custom-dropdown-1" class="relative">
+                                                                <div
+                                                                    class="custom-select-header cursor-pointer p-3 rounded-lg flex justify-between items-center border border-gray-300 bg-white shadow-sm {{ $isRejected1 ? 'border-red-300' : '' }}">
+                                                                    <span id="selected-dosen-1"
+                                                                        class="text-gray-700">-- Pilih Dosen Pembimbing
+                                                                        1 --</span>
+                                                                    <svg class="w-5 h-5 text-gray-500" fill="none"
+                                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M19 9l-7 7-7-7"></path>
+                                                                    </svg>
+                                                                </div>
+                                                                <div
+                                                                    class="custom-select-options hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+                                                                    <div class="sticky top-0 bg-white shadow-sm z-20">
+                                                                        <input type="text"
+                                                                            class="search-input p-3 w-full border-b border-gray-200 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-green-300"
+                                                                            placeholder="Cari dosen...">
+                                                                    </div>
+                                                                    <div class="py-1">
+                                                                        @foreach ($dosens as $dosen)
+                                                                            @if (strtolower($dosen->peran) === 'pembimbing')
+                                                                                @php
+                                                                                    $isDosenAccepted =
+                                                                                        $isAccepted2 &&
+                                                                                        $dospem2Id == $dosen->id;
+                                                                                @endphp
+                                                                                @if ($dosen->id != $dospem1Ditolak && !$isDosenAccepted)
+                                                                                    <div class="dosen-option p-3 hover:bg-green-50 cursor-pointer"
+                                                                                        data-value="{{ $dosen->id }}"
+                                                                                        data-selected="{{ $dospem1Id == $dosen->id ? 'true' : 'false' }}">
+                                                                                        <div class="font-medium">
+                                                                                            {{ $dosen->name }}</div>
+                                                                                        <div
+                                                                                            class="text-sm text-gray-500">
+                                                                                            NIDN: {{ $dosen->nidn }}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                @endif
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                                <input type="hidden" name="dosen_pembimbing_id"
+                                                                    id="dosen_pembimbing_id"
+                                                                    value="{{ $dospem1Id }}">
+                                                            </div>
+                                                        @else
+                                                            <!-- Jika pending, tampilkan informasi yang dipilih tetapi tidak bisa diubah -->
+                                                            <div
+                                                                class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
+                                                                <div class="flex items-center">
+                                                                    <svg class="w-5 h-5 text-yellow-500 mr-2"
+                                                                        fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path fill-rule="evenodd"
+                                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm1-9a1 1 0 100 2 1 1 0 000-2z"
+                                                                            clip-rule="evenodd"></path>
+                                                                    </svg>
+                                                                    <span class="text-yellow-700 font-medium">Dosen
+                                                                        Pembimbing 1 yang dipilih (menunggu
+                                                                        konfirmasi):</span>
+                                                                </div>
+                                                                <div class="mt-2 ml-7 text-yellow-700 font-medium">
+                                                                    {{ $dosenPembimbing1->name }} -
+                                                                    {{ $dosenPembimbing1->nidn }}
+                                                                </div>
+                                                                <input type="hidden" name="dosen_pembimbing_id"
+                                                                    value="{{ $dospem1Id }}">
+                                                            </div>
+                                                        @endif
 
-          <div class="mt-3">
-              @php
-                  $statusClass1 = match ($status1) {
-                      'pending'
-                          => 'bg-yellow-100 text-yellow-800 border-yellow-300',
-                      'accepted'
-                          => 'bg-green-100 text-green-800 border-green-300',
-                      'rejected'
-                          => 'bg-red-100 text-red-800 border-red-300',
-                      default
-                          => 'bg-gray-100 text-gray-800 border-gray-300',
-                  };
+                                                        <div class="mt-3">
+                                                            @php
+                                                                $statusClass1 = match ($status1) {
+                                                                    'pending'
+                                                                        => 'bg-yellow-100 text-yellow-800 border-yellow-300',
+                                                                    'accepted'
+                                                                        => 'bg-green-100 text-green-800 border-green-300',
+                                                                    'rejected'
+                                                                        => 'bg-red-100 text-red-800 border-red-300',
+                                                                    default
+                                                                        => 'bg-gray-100 text-gray-800 border-gray-300',
+                                                                };
 
-                  $statusLabel1 = match ($status1) {
-                      'pending' => 'Menunggu Konfirmasi',
-                      'accepted' => 'Diterima',
-                      'rejected' => 'Ditolak',
-                      default => ucfirst($status1),
-                  };
-              @endphp
+                                                                $statusLabel1 = match ($status1) {
+                                                                    'pending' => 'Menunggu Konfirmasi',
+                                                                    'accepted' => 'Diterima',
+                                                                    'rejected' => 'Ditolak',
+                                                                    default => ucfirst($status1),
+                                                                };
+                                                            @endphp
 
-              @if ($dospem1Id)
-                  <span
-                      class="inline-block px-3 py-1 text-xs font-semibold rounded-full border {{ $statusClass1 }}">
-                      Status Pembimbing 1: {{ $statusLabel1 }}
-                  </span>
-              @endif
+                                                            @if ($dospem1Id)
+                                                                <span
+                                                                    class="inline-block px-3 py-1 text-xs font-semibold rounded-full border {{ $statusClass1 }}">
+                                                                    Status Pembimbing 1: {{ $statusLabel1 }}
+                                                                </span>
+                                                            @endif
 
-              @if ($isRejected1 && $pengajuan->catatan_pembimbing)
-                  <div
-                      class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div class="flex items-start">
-                          <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5"
-                              fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd"
-                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                  clip-rule="evenodd"></path>
-                          </svg>
-                          <div>
-                              <p class="font-medium text-red-700">Catatan
-                                  Dosen:</p>
-                              <p class="text-sm text-red-600">
-                                  {{ $pengajuan->catatan_pembimbing }}
-                              </p>
-                          </div>
-                      </div>
-                  </div>
-              @endif
-          </div>
-      </div>
+                                                            @if ($isRejected1 && $pengajuan->catatan_pembimbing)
+                                                                <div
+                                                                    class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                                                    <div class="flex items-start">
+                                                                        <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5"
+                                                                            fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fill-rule="evenodd"
+                                                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                                                                clip-rule="evenodd"></path>
+                                                                        </svg>
+                                                                        <div>
+                                                                            <p class="font-medium text-red-700">Catatan
+                                                                                Dosen:</p>
+                                                                            <p class="text-sm text-red-600">
+                                                                                {{ $pengajuan->catatan_pembimbing }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
 
-      <!-- Dosen Pembimbing 2 -->
-      <div>
-          <label for="dosen_pembimbing_2_id"
-              class="block text-sm font-medium text-gray-700 mb-1">
-              Pilih Dosen Pembimbing 2
-          </label>
+                                                    <!-- Dosen Pembimbing 2 -->
+                                                    <div>
+                                                        <label for="dosen_pembimbing_2_id"
+                                                            class="block text-sm font-medium text-gray-700 mb-1">
+                                                            Pilih Dosen Pembimbing 2
+                                                        </label>
 
-          @if ($isAccepted2 && $dosenPembimbing2)
-              <!-- Jika dosen pembimbing 2 sudah disetujui, tampilkan informasi saja -->
-              <div
-                  class="p-4 bg-green-50 border border-green-200 rounded-lg shadow-sm">
-                  <div class="flex items-center">
-                      <svg class="w-5 h-5 text-green-500 mr-2"
-                          fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                              clip-rule="evenodd"></path>
-                      </svg>
-                      <span class="text-green-700 font-medium">Dosen
-                          Pembimbing 2 yang disetujui:</span>
-                  </div>
-                  <div class="mt-2 ml-7 text-green-700 font-medium">
-                      {{ $dosenPembimbing2->name }} -
-                      {{ $dosenPembimbing2->nidn }}
-                  </div>
-                  <!-- Tambahkan hidden input untuk menyimpan ID dosen yang sudah disetujui -->
-                  <input type="hidden" name="dosen_pembimbing_2_id"
-                      value="{{ $dospem2Id }}">
-              </div>
-          @elseif ($isRejected2 || (!$dospem2Id && ($isAccepted1 || $status1 == 'pending')))
-              <!-- Custom Dropdown for Pembimbing 2 -->
-              <div id="custom-dropdown-2" class="relative"
-                  data-disabled="{{ !$dospem1Id || $status1 == 'rejected' ? 'true' : 'false' }}">
-                  <div
-                      class="custom-select-header cursor-pointer p-3 rounded-lg flex justify-between items-center border border-gray-300 bg-white shadow-sm {{ $isRejected2 ? 'border-red-300' : '' }} {{ !$dospem1Id || $status1 == 'rejected' ? 'opacity-50' : '' }}">
-                      <span id="selected-dosen-2"
-                          class="text-gray-700">-- Pilih Dosen Pembimbing
-                          2 --</span>
-                      <svg class="w-5 h-5 text-gray-500" fill="none"
-                          stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round"
-                              stroke-linejoin="round" stroke-width="2"
-                              d="M19 9l-7 7-7-7"></path>
-                      </svg>
-                  </div>
-                  <div
-                      class="custom-select-options hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
-                      <div class="sticky top-0 bg-white shadow-sm z-20">
-                          <input type="text"
-                              class="search-input p-3 w-full border-b border-gray-200 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-green-300"
-                              placeholder="Cari dosen...">
-                      </div>
-                      <div class="py-1">
-                          @foreach ($dosens as $dosen)
-                              @if (strtolower($dosen->peran) === 'pembimbing')
-                                  @php
-                                      $isDosenAccepted = (($isAccepted1 && $dospem1Id == $dosen->id) || ($dosen->id == $dospem1Id && $status1 == 'pending'));
-                                  @endphp
-                                  @if ($dosen->id != $dospem2Ditolak && !$isDosenAccepted)
-                                      <div class="dosen-option p-3 hover:bg-green-50 cursor-pointer"
-                                          data-value="{{ $dosen->id }}"
-                                          data-dosen-id="{{ $dosen->id }}"
-                                          data-selected="{{ $dospem2Id == $dosen->id ? 'true' : 'false' }}">
-                                          <div class="font-medium">
-                                              {{ $dosen->name }}</div>
-                                          <div
-                                              class="text-sm text-gray-500">
-                                              NIDN: {{ $dosen->nidn }}
-                                          </div>
-                                      </div>
-                                  @endif
-                              @endif
-                          @endforeach
-                      </div>
-                  </div>
-                  <input type="hidden" name="dosen_pembimbing_2_id"
-                      id="dosen_pembimbing_2_id"
-                      value="{{ $dospem2Id }}">
-              </div>
-          @else
-              <!-- Jika pending, tampilkan informasi yang dipilih tetapi tidak bisa diubah -->
-              <div
-                  class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
-                  <div class="flex items-center">
-                      <svg class="w-5 h-5 text-yellow-500 mr-2"
-                          fill="currentColor" viewBox="0 0 20 20">
-                          <path fill-rule="evenodd"
-                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm1-9a1 1 0 100 2 1 1 0 000-2z"
-                              clip-rule="evenodd"></path>
-                      </svg>
-                      <span class="text-yellow-700 font-medium">Dosen
-                          Pembimbing 2 yang dipilih (menunggu
-                          konfirmasi):</span>
-                  </div>
-                  <div class="mt-2 ml-7 text-yellow-700 font-medium">
-                      {{ $dosenPembimbing2->name }} -
-                      {{ $dosenPembimbing2->nidn }}
-                  </div>
-                  <input type="hidden" name="dosen_pembimbing_2_id"
-                      value="{{ $dospem2Id }}">
-              </div>
-          @endif
+                                                        @if ($isAccepted2 && $dosenPembimbing2)
+                                                            <!-- Jika dosen pembimbing 2 sudah disetujui, tampilkan informasi saja -->
+                                                            <div
+                                                                class="p-4 bg-green-50 border border-green-200 rounded-lg shadow-sm">
+                                                                <div class="flex items-center">
+                                                                    <svg class="w-5 h-5 text-green-500 mr-2"
+                                                                        fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path fill-rule="evenodd"
+                                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                                            clip-rule="evenodd"></path>
+                                                                    </svg>
+                                                                    <span class="text-green-700 font-medium">Dosen
+                                                                        Pembimbing 2 yang disetujui:</span>
+                                                                </div>
+                                                                <div class="mt-2 ml-7 text-green-700 font-medium">
+                                                                    {{ $dosenPembimbing2->name }} -
+                                                                    {{ $dosenPembimbing2->nidn }}
+                                                                </div>
+                                                                <!-- Tambahkan hidden input untuk menyimpan ID dosen yang sudah disetujui -->
+                                                                <input type="hidden" name="dosen_pembimbing_2_id"
+                                                                    value="{{ $dospem2Id }}">
+                                                            </div>
+                                                        @elseif ($isRejected2 || (!$dospem2Id && ($isAccepted1 || $status1 == 'pending')))
+                                                            <!-- Custom Dropdown for Pembimbing 2 -->
+                                                            <div id="custom-dropdown-2" class="relative"
+                                                                data-disabled="{{ !$dospem1Id || $status1 == 'rejected' ? 'true' : 'false' }}">
+                                                                <div
+                                                                    class="custom-select-header cursor-pointer p-3 rounded-lg flex justify-between items-center border border-gray-300 bg-white shadow-sm {{ $isRejected2 ? 'border-red-300' : '' }} {{ !$dospem1Id || $status1 == 'rejected' ? 'opacity-50' : '' }}">
+                                                                    <span id="selected-dosen-2"
+                                                                        class="text-gray-700">-- Pilih Dosen Pembimbing
+                                                                        2 --</span>
+                                                                    <svg class="w-5 h-5 text-gray-500" fill="none"
+                                                                        stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M19 9l-7 7-7-7"></path>
+                                                                    </svg>
+                                                                </div>
+                                                                <div
+                                                                    class="custom-select-options hidden absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-96 overflow-y-auto">
+                                                                    <div class="sticky top-0 bg-white shadow-sm z-20">
+                                                                        <input type="text"
+                                                                            class="search-input p-3 w-full border-b border-gray-200 rounded-t-lg focus:outline-none focus:ring-2 focus:ring-green-300"
+                                                                            placeholder="Cari dosen...">
+                                                                    </div>
+                                                                    <div class="py-1">
+                                                                        @foreach ($dosens as $dosen)
+                                                                            @if (strtolower($dosen->peran) === 'pembimbing')
+                                                                                @php
+                                                                                    $isDosenAccepted =
+                                                                                        ($isAccepted1 &&
+                                                                                            $dospem1Id == $dosen->id) ||
+                                                                                        ($dosen->id == $dospem1Id &&
+                                                                                            $status1 == 'pending');
+                                                                                @endphp
+                                                                                @if ($dosen->id != $dospem2Ditolak && !$isDosenAccepted)
+                                                                                    <div class="dosen-option p-3 hover:bg-green-50 cursor-pointer"
+                                                                                        data-value="{{ $dosen->id }}"
+                                                                                        data-dosen-id="{{ $dosen->id }}"
+                                                                                        data-selected="{{ $dospem2Id == $dosen->id ? 'true' : 'false' }}">
+                                                                                        <div class="font-medium">
+                                                                                            {{ $dosen->name }}</div>
+                                                                                        <div
+                                                                                            class="text-sm text-gray-500">
+                                                                                            NIDN: {{ $dosen->nidn }}
+                                                                                        </div>
+                                                                                    </div>
+                                                                                @endif
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </div>
+                                                                </div>
+                                                                <input type="hidden" name="dosen_pembimbing_2_id"
+                                                                    id="dosen_pembimbing_2_id"
+                                                                    value="{{ $dospem2Id }}">
+                                                            </div>
+                                                        @else
+                                                            <!-- Jika pending, tampilkan informasi yang dipilih tetapi tidak bisa diubah -->
+                                                            <div
+                                                                class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg shadow-sm">
+                                                                <div class="flex items-center">
+                                                                    <svg class="w-5 h-5 text-yellow-500 mr-2"
+                                                                        fill="currentColor" viewBox="0 0 20 20">
+                                                                        <path fill-rule="evenodd"
+                                                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm-1-5a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zm1-9a1 1 0 100 2 1 1 0 000-2z"
+                                                                            clip-rule="evenodd"></path>
+                                                                    </svg>
+                                                                    <span class="text-yellow-700 font-medium">Dosen
+                                                                        Pembimbing 2 yang dipilih (menunggu
+                                                                        konfirmasi):</span>
+                                                                </div>
+                                                                <div class="mt-2 ml-7 text-yellow-700 font-medium">
+                                                                    {{ $dosenPembimbing2->name }} -
+                                                                    {{ $dosenPembimbing2->nidn }}
+                                                                </div>
+                                                                <input type="hidden" name="dosen_pembimbing_2_id"
+                                                                    value="{{ $dospem2Id }}">
+                                                            </div>
+                                                        @endif
 
-          <div class="mt-3">
-              @php
-                  $statusClass2 = match ($status2) {
-                      'pending'
-                          => 'bg-yellow-100 text-yellow-800 border-yellow-300',
-                      'accepted'
-                          => 'bg-green-100 text-green-800 border-green-300',
-                      'rejected'
-                          => 'bg-red-100 text-red-800 border-red-300',
-                      default
-                          => 'bg-gray-100 text-gray-800 border-gray-300',
-                  };
+                                                        <div class="mt-3">
+                                                            @php
+                                                                $statusClass2 = match ($status2) {
+                                                                    'pending'
+                                                                        => 'bg-yellow-100 text-yellow-800 border-yellow-300',
+                                                                    'accepted'
+                                                                        => 'bg-green-100 text-green-800 border-green-300',
+                                                                    'rejected'
+                                                                        => 'bg-red-100 text-red-800 border-red-300',
+                                                                    default
+                                                                        => 'bg-gray-100 text-gray-800 border-gray-300',
+                                                                };
 
-                  $statusLabel2 = match ($status2) {
-                      'pending' => 'Menunggu Konfirmasi',
-                      'accepted' => 'Diterima',
-                      'rejected' => 'Ditolak',
-                      default => ucfirst($status2),
-                  };
-              @endphp
+                                                                $statusLabel2 = match ($status2) {
+                                                                    'pending' => 'Menunggu Konfirmasi',
+                                                                    'accepted' => 'Diterima',
+                                                                    'rejected' => 'Ditolak',
+                                                                    default => ucfirst($status2),
+                                                                };
+                                                            @endphp
 
-              @if ($dospem2Id)
-                  <span
-                      class="inline-block px-3 py-1 text-xs font-semibold rounded-full border {{ $statusClass2 }}">
-                      Status Pembimbing 2: {{ $statusLabel2 }}
-                  </span>
-              @endif
+                                                            @if ($dospem2Id)
+                                                                <span
+                                                                    class="inline-block px-3 py-1 text-xs font-semibold rounded-full border {{ $statusClass2 }}">
+                                                                    Status Pembimbing 2: {{ $statusLabel2 }}
+                                                                </span>
+                                                            @endif
 
-              @if ($isRejected2 && $pengajuan->catatan_pembimbing_2)
-                  <div
-                      class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <div class="flex items-start">
-                          <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5"
-                              fill="currentColor" viewBox="0 0 20 20">
-                              <path fill-rule="evenodd"
-                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
-                                  clip-rule="evenodd"></path>
-                          </svg>
-                          <div>
-                              <p class="font-medium text-red-700">Catatan
-                                  Dosen:</p>
-                              <p class="text-sm text-red-600">
-                                  {{ $pengajuan->catatan_pembimbing_2 }}
-                              </p>
-                          </div>
-                      </div>
-                  </div>
-              @endif
-          </div>
-      </div>
-  </div>
+                                                            @if ($isRejected2 && $pengajuan->catatan_pembimbing_2)
+                                                                <div
+                                                                    class="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                                                                    <div class="flex items-start">
+                                                                        <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5"
+                                                                            fill="currentColor" viewBox="0 0 20 20">
+                                                                            <path fill-rule="evenodd"
+                                                                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z"
+                                                                                clip-rule="evenodd"></path>
+                                                                        </svg>
+                                                                        <div>
+                                                                            <p class="font-medium text-red-700">Catatan
+                                                                                Dosen:</p>
+                                                                            <p class="text-sm text-red-600">
+                                                                                {{ $pengajuan->catatan_pembimbing_2 }}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-  @php
-      // Tentukan apakah tombol submit perlu ditampilkan
-      $showSubmitButton = false;
+                                                @php
+                                                    // Tentukan apakah tombol submit perlu ditampilkan
+                                                    $showSubmitButton = false;
 
-      // Tombol submit ditampilkan jika:
-      // - Pembimbing 1 belum dipilih
-      // - Pembimbing 1 ditolak dan perlu pemilihan ulang
-      // - Pembimbing 2 belum dipilih (dan pembimbing 1 sudah diterima/pending)
-      // - Pembimbing 2 ditolak dan perlu pemilihan ulang
+                                                    // Tombol submit ditampilkan jika:
+                                                    // - Pembimbing 1 belum dipilih
+                                                    // - Pembimbing 1 ditolak dan perlu pemilihan ulang
+                                                    // - Pembimbing 2 belum dipilih (dan pembimbing 1 sudah diterima/pending)
+                                                    // - Pembimbing 2 ditolak dan perlu pemilihan ulang
 
-      if (
-          !$dospem1Id ||
-          $isRejected1 ||
-          (!$dospem2Id && ($isAccepted1 || $status1 == 'pending')) ||
-          $isRejected2
-      ) {
-          $showSubmitButton = true;
-      }
-  @endphp
+                                                    if (
+                                                        !$dospem1Id ||
+                                                        $isRejected1 ||
+                                                        (!$dospem2Id && ($isAccepted1 || $status1 == 'pending')) ||
+                                                        $isRejected2
+                                                    ) {
+                                                        $showSubmitButton = true;
+                                                    }
+                                                @endphp
 
-  @if ($showSubmitButton)
-      <div class="mt-6">
-          <button type="submit"
-              class="w-full md:w-auto bg-green-600 text-white px-6 py-2.5 rounded-lg hover:bg-green-700 transition-colors shadow-sm flex items-center justify-center">
-              <svg class="w-5 h-5 mr-2" fill="none"
-                  stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round"
-                      stroke-width="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-              Simpan Dosen Pembimbing
-          </button>
-      </div>
-  @endif
-</form>
+                                                @if ($showSubmitButton)
+                                                    <div class="mt-6">
+                                                        <button type="submit"
+                                                            class="w-full md:w-auto bg-green-600 text-white px-6 py-2.5 rounded-lg hover:bg-green-700 transition-colors shadow-sm flex items-center justify-center">
+                                                            <svg class="w-5 h-5 mr-2" fill="none"
+                                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                            </svg>
+                                                            Simpan Dosen Pembimbing
+                                                        </button>
+                                                    </div>
+                                                @endif
+                                            </form>
 
 
                                             <!-- Tampilkan kontak dosen jika status accepted -->

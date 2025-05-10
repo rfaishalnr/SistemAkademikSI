@@ -31,14 +31,14 @@ class PengajuanSkripsiResource extends Resource
     protected static ?string $navigationGroup = 'Kelola Pengajuan TA';
 
     public static function getNavigationGroup(): ?string
-{
-    return 'Kelola Pengajuan TA';
-}
+    {
+        return 'Kelola Pengajuan TA';
+    }
 
-public static function getNavigationSort(): int
-{
-    return 1; // Nilai terkecil = posisi paling atas
-}
+    public static function getNavigationSort(): int
+    {
+        return 1; // Nilai terkecil = posisi paling atas
+    }
 
     public static function getNavigationBadge(): ?string
     {
@@ -48,36 +48,36 @@ public static function getNavigationSort(): int
     public static function form(Forms\Form $form): Forms\Form
     {
         return $form
-        ->schema([
-            Select::make('mahasiswa_id')
-                ->label('Mahasiswa')
-                ->options(Mahasiswa::all()->pluck('name', 'id')->toArray())
-                ->searchable()
-                ->required(),
+            ->schema([
+                Select::make('mahasiswa_id')
+                    ->label('Mahasiswa')
+                    ->options(Mahasiswa::all()->pluck('name', 'id')->toArray())
+                    ->searchable()
+                    ->required(),
 
-            Repeater::make('files')
-                ->label('Unggah Berkas')
-                ->schema([
-                    Select::make('nama_berkas')
-                        ->label('Jenis Berkas')
-                        ->options(function () {
-                            $ketentuan = Ketentuan::where('jenis', 'Skripsi')->pluck('persyaratan', 'persyaratan')->toArray();
-                            // Memastikan tidak ada nilai null di array options
-                            return array_filter($ketentuan, function($key, $value) {
-                                return $key !== null && $value !== null;
-                            }, ARRAY_FILTER_USE_BOTH);
-                        })
-                        ->required(),
+                Repeater::make('files')
+                    ->label('Unggah Berkas')
+                    ->schema([
+                        Select::make('nama_berkas')
+                            ->label('Jenis Berkas')
+                            ->options(function () {
+                                $ketentuan = Ketentuan::where('jenis', 'Skripsi')->pluck('persyaratan', 'persyaratan')->toArray();
+                                // Memastikan tidak ada nilai null di array options
+                                return array_filter($ketentuan, function ($key, $value) {
+                                    return $key !== null && $value !== null;
+                                }, ARRAY_FILTER_USE_BOTH);
+                            })
+                            ->required(),
 
-                    FileUpload::make('file')
-                        ->label('File')
-                        ->disk('public')
-                        ->directory('skripsi')
-                        ->required(),
-                ])
-                ->minItems(1)
-                ->maxItems(5),
-        ]);
+                        FileUpload::make('file')
+                            ->label('File')
+                            ->disk('public')
+                            ->directory('skripsi')
+                            ->required(),
+                    ])
+                    ->minItems(1)
+                    ->maxItems(8),
+            ]);
     }
 
     public static function table(Tables\Table $table): Tables\Table
@@ -89,14 +89,14 @@ public static function getNavigationSort(): int
                     ->sortable()
                     ->searchable(),
 
-                    TextColumn::make('files')
+                TextColumn::make('files')
                     ->label('Berkas')
                     ->formatStateUsing(function ($state) {
                         $files = is_string($state) ? json_decode($state, true) : $state;
                         if (!is_array($files)) {
                             return '<em>Tidak ada berkas</em>';
                         }
-                
+
                         return '<ol style="list-style-type: decimal; padding-right: 9rem; margin: 0;">' .
                             implode('', array_map(function ($file) {
                                 if (!is_array($file) || !isset($file['file'], $file['nama_berkas'])) {
@@ -107,43 +107,43 @@ public static function getNavigationSort(): int
                             '</ol>';
                     })
                     ->html(),
-                
-                
-                    TextColumn::make('statuses')
+
+
+                TextColumn::make('statuses')
                     ->label('Status')
                     ->formatStateUsing(function ($state) {
                         // Convert string ke array jika perlu
                         if (is_string($state)) {
                             $state = array_map('trim', explode(',', $state));
                         }
-                    
+
                         $labelMap = [
                             'accepted' => ['label' => 'Disetujui', 'color' => '#10b981'], // Changed from 'Diterima' to 'Disetujui'
                             'rejected' => ['label' => 'Ditolak', 'color' => '#ef4444'],
                             'pending'  => ['label' => 'Menunggu', 'color' => '#6b7280'],
                         ];
-                    
+
                         if (!is_array($state) || empty($state)) {
                             return '<em>Tidak ada status</em>';
                         }
-                    
+
                         return '<ol style="list-style-type: decimal; list-style-position: inside; margin: 0; padding-left: 1.25rem;">' .
-                        implode('', array_map(function ($item) use ($labelMap) {
-                            $label = $labelMap[$item]['label'] ?? ucfirst($item);
-                            $color = $labelMap[$item]['color'] ?? '#6b7280';
-                            return "<li style='margin-bottom: 0.25rem;'>
+                            implode('', array_map(function ($item) use ($labelMap) {
+                                $label = $labelMap[$item]['label'] ?? ucfirst($item);
+                                $color = $labelMap[$item]['color'] ?? '#6b7280';
+                                return "<li style='margin-bottom: 0.25rem;'>
                                         <span style='background-color: {$color}; color: white; padding: 0.25rem 0.5rem; border-radius: 0.375rem; font-size: 0.75rem; display: inline-block;'>
                                             {$label}
                                         </span>
                                     </li>";
-                        }, $state)) .
-                        '</ol>';
+                            }, $state)) .
+                            '</ol>';
                     })
                     ->html(),
-                
-                
-                
-                
+
+
+
+
 
 
             ])
